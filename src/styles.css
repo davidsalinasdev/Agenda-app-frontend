@@ -1,1 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~ngx-toastr/toastr';
+
+
+/* Acelerando las animaciones */
+.fast {
+  -webkit-animation-duration: 0.3s;
+  animation-duration: 0.3s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both
+}
+
+.font-text {
+  font-size: 25px;
+}
+
+
+/* Angular material */
+.example-full-width {
+  width: 100%;
+}
+
+/* Fin Angular material */
+
+/* Tabla de datos */
+.table-shadow {
+  box-shadow: 0 5px 5px -3px #0003,
+    0 8px 10px 1px #00000024,
+    0 3px 14px 2px #0000001f;
+}
+
+/* FIN Tabla de datos */

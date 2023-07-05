@@ -1,0 +1,43 @@
+<!-- Esta el pagina princiopal del componente -->
+<!-- Site wrapper -->
+<div class="wrapper animated fadeIn fast">
+
+
+  <app-header></app-header>
+  <app-sider></app-sider>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <app-breadcrumbs></app-breadcrumbs>
+
+    <!-- Aqui el sistema de rutas -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content -->
+    <!-- ============================================================== -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-body">
+
+          <!-- Aplicación principal -->
+          <router-outlet></router-outlet>
+
+        </div>
+
+      </div>
+      <!-- /.card -->
+
+    </section>
+    <!-- ============================================================== -->
+    <!-- End PAge Content -->
+    <!-- ============================================================== -->
+
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- El pie de pagina de la app -->
+  <app-footer></app-footer>
+
+
+</div>

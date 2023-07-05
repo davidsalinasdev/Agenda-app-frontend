@@ -1,0 +1,93 @@
+/* Angular material*/
+.example-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+  align-items: flex-start;
+}
+
+.example-radio-button {
+  margin: 5px;
+}
+
+::ng-deep .mat-form-field-infix {
+  border-top: 0.32375em solid rgba(0, 0, 0, 0) !important;
+}
+
+table {
+  width: 100%;
+}
+
+
+/* Fin Angular material*/
+
+.btn-margen {
+  margin-bottom: 5px;
+}
+
+@media (min-width: 1354px) {
+  .btn-margen {
+    margin-bottom: 0px;
+    margin-right: 5px;
+  }
+}
+
+
+.table-header {
+  background: #116572;
+}
+
+.table-header__encabezado th {
+  font-size: 12px !important;
+  color: #FFFFFF;
+  padding: 15px;
+}
+
+.table-cuerpo__datos {
+  font-size: 14px !important;
+}
+
+.table-cuerpo__datos td {
+  color: rgba(0, 0, 0, .87);
+}
+
+/* Paginación */
+.my-pagination ::ng-deep .ngx-pagination .current {
+  background: rgba(95, 95, 95, 0.87);
+  border-radius: 5px;
+}
+
+.paginacion__cantitems {
+  font-size: 15px;
+  color: rgba(0, 0, 0, .87);
+}
+
+/* Modal registrar */
+.contenedor-header {
+  border-radius: 2.8px;
+}
+
+/* Tabla de datos */
+.table th,
+.table td {
+  vertical-align: inherit;
+}
+
+.texto-tam {
+  font-size: 0.8rem;
+}
+
+/* Sector crear titulo y btn crear usuario */
+.creacion {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 576px) {
+  .creacion {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* FIN Sector crear titulo y btn crear usuario */

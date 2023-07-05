@@ -1,0 +1,106 @@
+/*Theme Colors*/
+/*bootstrap Color*/
+/*Light colors*/
+/*Normal Color*/
+/*Extra Variable*/
+/*******************
+Login register and recover password Page
+******************/
+.login-register {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100%;
+  width: 100%;
+  padding: 10% 0;
+  position: fixed;
+}
+
+.login-box {
+  width: 400px;
+  margin: 0 auto;
+}
+
+.login-box .footer {
+  width: 100%;
+  left: 0px;
+  right: 0px;
+}
+
+.login-box .social {
+  display: block;
+  margin-bottom: 30px;
+}
+
+#recoverform {
+  display: none;
+}
+
+.login-sidebar {
+  padding: 0px;
+  margin-top: 0px;
+}
+
+.login-sidebar .login-box {
+  right: 0px;
+  position: absolute;
+  height: 100%;
+}
+
+.imagen-logo {
+  max-width: 100%;
+  width: 60%;
+  max-height: 100%;
+}
+
+.imagen-logo2 {
+  max-width: 100%;
+  width: 30%;
+  max-height: 100%;
+}
+
+.cat {
+  /* height: 200px; */
+  width: 360px;
+}
+
+.logIntext {
+  font-size: 2rem;
+  color: crimson;
+  font-weight: bold;
+}
+
+.img-fluidd {
+  max-width: 100%;
+  height: auto;
+}
+
+.sombras {
+  -webkit-box-shadow: 2px 2px 8px -2px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 2px 8px -2px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 2px 8px -2px rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+}
+
+.hero {
+  background-image: url(/assets/images/background/login-register.jpg);
+  /* Set a specific height */
+  height: 100vh;
+
+  /* Position and center the image to scale nicely on all screens */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.btn:hover {
+  background-color: rgb(14, 77, 148);
+}
+
+.borde-top {
+  border-top: 3px solid #17a2b8;
+}
+
+.btn-succes--color {
+  background-color: #17a2b8 !important;
+}
