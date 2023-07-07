@@ -19,6 +19,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 // Paginación
 import { NgxPaginationModule } from 'ngx-pagination';
 
+// Full calendar
+import { FullCalendarModule } from '@fullcalendar/angular';
+
 @NgModule({
   declarations: [
     PagesComponent,
@@ -31,7 +34,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    FullCalendarModule // register FullCalendar with your app
   ],
   exports: [
     PagesComponent,
