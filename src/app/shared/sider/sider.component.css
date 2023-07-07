@@ -1,0 +1,18 @@
+[class*="sidebar-dark"] .brand-link {
+  border-bottom: 1px solid #737b8336;
+}
+
+[class*="sidebar-dark"] .user-panel {
+  border-bottom: 1px solid #737b8336;
+}
+
+
+.user-panel .info {
+  padding: 0px 5px 5px 10px;
+}
+
+.icono-user {
+  color: #ffffff;
+  font-size: 1.2rem;
+  margin-left: 10px;
+}

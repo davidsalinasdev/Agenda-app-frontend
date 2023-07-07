@@ -1,5 +1,5 @@
 <!-- Content Header (Page header) -->
-<section class="content-header">
+<section class="content-header animated fadeIn fast">
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
@@ -13,14 +13,14 @@
 <!-- Main content -->
 <section class="content">
   <div class="error-page">
-    <h2 class="headline text-warning"> 404</h2>
+    <h2 class="headline text-danger"> 404</h2>
 
     <div class="error-content">
-      <h3><i class="fas fa-exclamation-triangle text-warning"></i> UPS! Pagina no encontrada.</h3>
+      <h3><i class="fas fa-exclamation-triangle text-danger"></i> UPS! Pagina no encontrada.</h3>
 
       <p>
         No pudimos encontrar la página que buscaba
-        Mientras tanto, puede <a href="../../index.html">volver al panel de control.</a>
+        Mientras tanto, puede <a [routerLink]="[ '/inicio']">volver al panel de control.</a>
       </p>
 
     </div>
@@ -29,4 +29,4 @@
   <!-- /.error-page -->
 </section>
 <!-- /.content -->
-<h1 class="display-4">SISECO</h1>
+<h1 class="display-4">AGENDA INSTITUCIONAL GADC</h1>

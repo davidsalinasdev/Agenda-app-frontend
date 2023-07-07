@@ -20,7 +20,7 @@ export class BreadcrumbsComponent {
       )
       .subscribe(({ titulo }) => {
         this.titulo = titulo;
-        document.title = `SISECO-${titulo}`;
+        document.title = `Agenda-${titulo}`;
       })
   }
 

@@ -1,14 +1,14 @@
-<div class="login-page animated fadeIn fast">
+<div class="login-page animated fadeIn fast hero-img">
   <div class="container-fluid">
     <div class="row justify-content-center">
       <div class="col-12 col-md-7 col-lg-5 col-xl-3">
         <!-- /.login-logo -->
         <div class="card card-outline card-succes borde-top">
           <div class="card-header text-center">
-            <p class="h4 text-uppercase p-3">Sistema de seguimiento de contrataciones</p>
+            <p class="h4 text-uppercase p-3">Agenda institucional</p>
           </div>
           <div class="card-body">
-            <p class="login-box-msg text-uppercase h5" style="color: rgb(14, 77, 148);">Iniciar sesión</p>
+            <p class="login-box-msg text-uppercase h5" style="color: rgb(8, 68, 136);">Iniciar sesión</p>
 
             <form class="form-horizontal form-material" id="loginform" autocomplete="off" [formGroup]="this.formulario"
               (ngSubmit)="login()">
@@ -16,7 +16,7 @@
                 <input type="text" class="form-control" placeholder="* usuario" formControlName="user">
                 <div class="input-group-append">
                   <div class="input-group-text">
-                    <span class="fas fa-envelope"></span>
+                    <span class="fas fa-user"></span>
                   </div>
                 </div>
               </div>
@@ -29,8 +29,7 @@
                 </div>
               </div>
 
-
-              <button type="submit" class="btn btn-success btn-succes--color btn-block">INICIAR SESIÓN</button>
+              <button type="submit" class="btn btn-primary btn-block">INICIAR SESIÓN</button>
 
             </form>
           </div>

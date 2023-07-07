@@ -98,9 +98,20 @@ Login register and recover password Page
 }
 
 .borde-top {
-  border-top: 3px solid #17a2b8;
+  border-top: 3px solid rgb(8, 68, 136);
 }
 
 .btn-succes--color {
-  background-color: #17a2b8 !important;
+  background-color: rgb(8, 68, 136) !important;
 }
+
+
+/* Imagen de fondo */
+.hero-img {
+  background-image: url('../../../assets/dist/img/login-img.jpg');
+  background-size: cover;
+  /* Opcional: ajusta el tamaño de la imagen al contenedor */
+  /* Otros estilos adicionales */
+}
+
+/* FIN Imagen de fondo */
