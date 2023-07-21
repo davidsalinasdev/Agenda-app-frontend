@@ -1,12 +1,542 @@
-<div class="card">
-  <div class="body p-3">
-    <div class="row">
-      <div class="col-12 col-md-6">
+<div class="card animated fadeIn fast">
 
-      </div>
-      <div class="col-12 col-md-6">
-        <full-calendar [events]="this.events" [options]="calendarOptions"></full-calendar>
+  <div class="card-body p-3">
+
+    <div class="crear-evento">
+      <button class="btn btn-primary text-uppercase" (click)="this.crearEvento();"><i class="fas fa-plus"></i> Crear
+        agenda</button>
+    </div>
+    <hr>
+
+    <!-- Solo calendario -->
+    <div *ngIf="this.btnNewEvent; else notLista" class="row justify-content-center">
+      <div class="calendario col-12 col-xl-7 p-4">
+        <full-calendar [events]="this.events" [options]="calendarOptions"
+          [style]="{ 'width': '100%','display': 'block' }"></full-calendar>
       </div>
     </div>
+
+    <!-- Calendario con lista de eventos -->
+    <ng-template #notLista>
+
+      <!-- Para formulario y calendario -->
+      <div *ngIf="this.mostrarTabla; else notMostrarTabla"
+        class="row justify-content-center datos-calend animated fadeIn fast ">
+
+        <!-- Formulario -->
+        <div class="col-12 col-xl-3">
+
+          <div class="calendario calendario--lista">
+            <h4 class="text-uppercase mb-0 p-2">Formulario de registro</h4>
+            <hr class="mt-0 mb-0">
+
+            <form #formDirective="ngForm" [formGroup]="this.formulario" class="p-3" (ngSubmit)="this.submit()">
+
+              <!-- Nombre evento -->
+              <div class="form-group">
+                <label for="evento">Motivo de agenda:<span class="text-danger">*</span></label>
+                <div class="full-width">
+                  <input type="text" pInputText formControlName="evento" placeholder="Ingrese el motivo de la agenda"
+                    [style]="{ 'width': '100%','display': 'block' }" />
+                </div>
+                <!-- Validacion -->
+                <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+                <span *ngIf="this.evento?.invalid && (this.evento?.dirty || this.evento?.touched)" class="texto-tam">
+                  <!-- Errores con expresiones regulares -->
+                  <div *ngIf="this.evento?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                    Este campo es requerido.
+                  </div>
+
+                  <div *ngIf="this.evento?.hasError('maxlength')" class="animated fadeIn fast text-danger" id="">
+                    Este campo solo acepta solo 70 letras.
+                  </div>
+                </span>
+              </div>
+
+              <!-- Lugar evento -->
+              <div class="form-group">
+                <label for="lugar_evento">Lugar:<span class="text-danger">*</span></label>
+                <div class="full-width">
+                  <input type="text" pInputText formControlName="lugar_evento" placeholder="Ingrese el lugar"
+                    [style]="{ 'width': '100%','display': 'block' }" />
+                </div>
+                <!-- Validacion -->
+                <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+                <span *ngIf="this.lugar_evento?.invalid && (this.lugar_evento?.dirty || this.lugar_evento?.touched)"
+                  class="texto-tam">
+                  <!-- Errores con expresiones regulares -->
+                  <div *ngIf="this.lugar_evento?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                    Este campo es requerido.
+                  </div>
+
+                  <div *ngIf="this.lugar_evento?.hasError('maxlength')" class="animated fadeIn fast text-danger" id="">
+                    Este campo solo acepta solo 70 letras.
+                  </div>
+                </span>
+              </div>
+
+              <!-- Fecha hora  -->
+              <div class="form-group">
+                <label for="fecha_hora_evento">Fecha y hora:<span class="text-danger">*</span></label>
+
+                <input type="datetime-local" pInputText style="width: 100%;" formControlName="fecha_hora_evento"
+                  placeholder="Ingrese fecha y hora de la agenda">
+
+                <!-- Validacion -->
+                <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+                <span
+                  *ngIf="this.fecha_hora_evento?.invalid && (this.fecha_hora_evento?.dirty || this.fecha_hora_evento?.touched)"
+                  class="texto-tam">
+                  <!-- Errores con expresiones regulares -->
+                  <div *ngIf="this.fecha_hora_evento?.hasError('required')" class="animated fadeIn fast text-danger"
+                    id="">
+                    Este campo es requerido.
+                  </div>
+                </span>
+              </div>
+
+
+              <!-- Etiqueta -->
+              <div class="form-group">
+                <label for="etiqueta">Color de etiqueta:<span class="text-danger">*</span></label>
+                <div class="full-width">
+                  <p-colorPicker formControlName="etiqueta">
+                  </p-colorPicker>
+                </div><br>
+                <!-- Validacion -->
+                <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+                <span *ngIf="this.etiqueta?.invalid && (this.etiqueta?.dirty || this.etiqueta?.touched)"
+                  class="texto-tam">
+                  <!-- Errores con expresiones regulares -->
+                  <div *ngIf="this.etiqueta?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                    Este campo es requerido.
+                  </div>
+                </span>
+              </div>
+
+              <p class="text-left mt-3">Los campos con ( <span class="text-danger">*</span> ) son obligatorios</p>
+              <hr>
+              <!-- Botones cancelar y submit -->
+              <div class="btn-crear">
+                <button type="button" class="btn btn-danger text-uppercase"
+                  (click)="this.cancelar(formDirective)">Cancelar</button>
+
+                <div *ngIf="this.btnSave; else notBtnSave" class="">
+                  <button type="submit" class="ms-2 btn btn-primary waves-effect text-uppercase"
+                    [disabled]="this.formulario.invalid">
+                    Crear evento
+                  </button>
+                </div>
+
+                <ng-template #notBtnSave>
+                  <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.notBtnSave">
+                    <p-progressSpinner></p-progressSpinner>
+                    <span class="ms-2">Guardando</span>
+                  </button>
+                </ng-template>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+
+        <!-- Calendario -->
+        <div class="datos-calent--calendario calendario col-12  col-xl-7 p-4 animated fadeIn fast">
+          <full-calendar [style]="{ 'width': '100%','display': 'block' }" [events]="this.events"
+            [options]="calendarOptions"></full-calendar>
+        </div>
+      </div>
+
+      <!-- Para lista tabla y calendario -->
+      <ng-template #notMostrarTabla>
+        <div class="row justify-content-center">
+          <!-- Tabla -->
+          <div class="datos-calend--lista col-12 col-xl-5 animated fadeIn fast">
+
+            <div class="row">
+
+              <div class="col-12 calendario calendario--lista">
+                <div class="compartir-enlace">
+                  <p class="titulo-evento  mt-3">Datos de agenda</p>
+
+                  <div class=" mt-3">
+                    <a class="btn btn-success text-uppercase text-left" (click)="this.compartirEnWhatsApp()"><i
+                        class="fas fa-share-alt text-white"></i>
+                      Compartir enlace</a>
+                  </div>
+                </div>
+                <hr>
+                <!-- Lista de creacion de eventos -->
+                <p class="text-primary text-uppercase">Agenda:</p>
+
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Codigo</th>
+                        <th>Motivo agenda</th>
+                        <th>lugar</th>
+                        <th>Fecha y hora</th>
+                        <th>Estado</th>
+                        <th>Etiqueta</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{ this.newEventCreate.id }}</td>
+                        <td>{{ this.newEventCreate.evento }}</td>
+                        <td>{{ this.newEventCreate.lugar_evento }}</td>
+                        <td>{{ this.fechaEventoGlobal }} | {{ this.horaEventoGlobal }} </td>
+                        <td>{{ this.newEventCreate.estado }}</td>
+                        <td>
+                          <span class="etiqueta" [ngStyle]="{'background-color': this.newEventCreate.etiqueta, 'color':
+                          this.newEventCreate.etiqueta }">-----</span>
+                        </td>
+                        <td>
+                          <a type="button" class="text-warning btn-margen"
+                            (click)="this.cargarModificarEvento(this.newEventCreate.id )">
+                            <i class="fas fa-pen"></i>
+                          </a>
+
+                          <a class="ml-4 text-danger"
+                            (click)="this.destroyEvento(this.newEventCreate.id, this.newEventCreate.evento)">
+                            <i class="fas fa-trash"></i>
+                          </a>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                <hr>
+
+                <!-- Boton crear puntos -->
+                <div *ngIf="this.mostrarTablaPuntos; else notTablaPuntos" class="d-flex justify-content-end mb-3">
+                  <button class="btn btn-danger" (click)="this.crear_punto_evento();"><i class="fas fa-plus"></i> Crear
+                    puntos para esta agenda</button>
+                </div>
+
+                <!-- Lista de puntos a tratar -->
+                <ng-template #notTablaPuntos>
+
+                  <div class="animated fadeIn fast">
+                    <p class="text-primary text-uppercase">Puntos a tratar:</p>
+
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Punto</th>
+                            <th>Fecha registro</th>
+                            <th>Agregado por</th>
+                            <th>Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Primer Punto -->
+                          <tr>
+                            <td [width]="10">1.</td>
+                            <td>{{ this.newEventCreate.evento }}</td>
+                            <td>{{ this.fechaEventoGlobal }}</td>
+                            <td>{{ this.nombreUserPunto }}</td>
+                            <td>
+                              <span class="text-success">Sin acciones</span>
+                            </td>
+                          </tr>
+                          <tr *ngFor="let item of this.puntosCreados; let i = index">
+                            <td [width]="10">{{ i + 2 }}.</td>
+                            <td>{{ item.puntos }}</td>
+                            <td>{{ item.created_at }}</td>
+                            <td>{{ item.usuario }}</td>
+                            <td>
+                              <a class="text-warning btn-margen" (click)="this.cargarModificarPunto(item.id )">
+                                <i class="fas fa-pen"></i>
+                              </a>
+
+                              <a class="ml-4 text-danger" (click)="this.destroyPunto(item.id,item.eventos_id)">
+                                <i class="fas fa-trash"></i>
+                              </a>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <!-- Formulario para agregar punto a una reunión -->
+                  <p class="text-uppercase mb-0 p-2">Registro de nuevos puntos</p>
+                  <form #formDirectivePuntos="ngForm" [formGroup]="this.formularioPuntos" class="p-3"
+                    (ngSubmit)="this.submitPuntos(formDirectivePuntos)">
+                    <div class="form-group row">
+                      <label for="puntos">Punto:</label>
+
+                      <input type="text" pInputText class="form-control" id="puntos" formControlName="puntos"
+                        placeholder="Ingrese un punto para este evento">
+
+                    </div>
+
+                    <!-- Botones cancelar y submit -->
+                    <div class="btn-crear">
+
+                      <button type="button" class="btn btn-danger text-uppercase"
+                        (click)="this.salirCrearEventosPuntos()">Salir</button>
+
+                      <div *ngIf="this.btnSave; else notBtnSave">
+                        <button type="submit" class="ms-2 btn btn-primary waves-effect text-uppercase"
+                          [disabled]="this.formularioPuntos.invalid">
+                          Agregar punto
+                        </button>
+                      </div>
+
+                      <ng-template #notBtnSave>
+                        <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.notBtnSave">
+                          <p-progressSpinner></p-progressSpinner>
+                          <span class="ms-2">Guardando</span>
+                        </button>
+                      </ng-template>
+                    </div>
+
+                  </form>
+                </ng-template>
+
+              </div>
+            </div>
+          </div>
+          <!-- Calendario -->
+          <div class="datos-calent--calendario calendario col-12  col-xl-6 p-4 animated fadeIn fast">
+            <full-calendar [style]="{ 'width': '100%','display': 'block' }" [events]="this.events"
+              [options]="calendarOptions"></full-calendar>
+          </div>
+
+        </div>
+      </ng-template>
+
+
+    </ng-template>
+
   </div>
 </div>
+
+
+<!-- Modal editar evento -->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="display: none;"
+  aria-hidden="true" id="myModal_editar_evento">
+  <form #formDirectiveModificarEvento="ngForm" [formGroup]="this.formularioModificarEvento" class="ps-4 pt-4 pe-4 pb-0"
+    (ngSubmit)="this.submitModificarEvento(formDirectiveModificarEvento)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger contenedor-header">
+          <h5 class="modal-title text-white text-uppercase" id="myLargeModalLabel">Formulario de registro de agenda</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>
+        <div class="modal-body">
+
+          <h4 class="mb-4">Modificar datos</h4>
+
+          <!-- Nombre evento -->
+          <div class="form-group">
+            <label for="eventoM">Motivo de agenda:<span class="text-danger">*</span></label>
+            <div class="full-width">
+              <input type="text" pInputText formControlName="eventoM" id="eventoM"
+                placeholder="Ingrese el motivo de la agenda" [style]="{ 'width': '100%','display': 'block' }" />
+            </div>
+            <!-- Validacion -->
+            <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+            <span *ngIf="this.eventoM?.invalid && (this.eventoM?.dirty || this.eventoM?.touched)" class="texto-tam">
+              <!-- Errores con expresiones regulares -->
+              <div *ngIf="this.eventoM?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                Este campo es requerido.
+              </div>
+
+              <div *ngIf="this.eventoM?.hasError('maxlength')" class="animated fadeIn fast text-danger" id="">
+                Este campo solo acepta solo 70 letras.
+              </div>
+            </span>
+          </div>
+
+          <!-- Lugar evento -->
+          <div class="form-group">
+            <label for="lugar_eventoM">Lugar:<span class="text-danger">*</span></label>
+            <div class="full-width">
+              <input type="text" id="lugar_eventoM" pInputText formControlName="lugar_eventoM"
+                placeholder="Ingrese el lugar" [style]="{ 'width': '100%','display': 'block' }" />
+            </div>
+            <!-- Validacion -->
+            <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+            <span *ngIf="this.lugar_eventoM?.invalid && (this.lugar_eventoM?.dirty || this.lugar_eventoM?.touched)"
+              class="texto-tam">
+              <!-- Errores con expresiones regulares -->
+              <div *ngIf="this.lugar_eventoM?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                Este campo es requerido.
+              </div>
+
+              <div *ngIf="this.lugar_eventoM?.hasError('maxlength')" class="animated fadeIn fast text-danger" id="">
+                Este campo solo acepta solo 70 letras.
+              </div>
+            </span>
+          </div>
+
+          <!-- Fecha hora  -->
+          <div class="form-group">
+            <label for="fecha_hora_eventoM">Fecha y hora:<span class="text-danger">*</span></label>
+
+            <input type="datetime-local" id="fecha_hora_eventoM" pInputText style="width: 100%;"
+              formControlName="fecha_hora_eventoM" placeholder="Ingrese fecha y hora de la agenda">
+
+            <!-- Validacion -->
+            <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+            <span
+              *ngIf="this.fecha_hora_eventoM?.invalid && (this.fecha_hora_eventoM?.dirty || this.fecha_hora_eventoM?.touched)"
+              class="texto-tam">
+              <!-- Errores con expresiones regulares -->
+              <div *ngIf="this.fecha_hora_eventoM?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                Este campo es requerido.
+              </div>
+            </span>
+          </div>
+
+          <!-- Etiqueta -->
+          <div class="form-group">
+            <label for="etiquetaM">Color de etiqueta:<span class="text-danger">*</span></label>
+            <div class="full-width">
+              <p-colorPicker formControlName="etiquetaM">
+              </p-colorPicker>
+            </div><br>
+            <!-- Validacion -->
+            <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+            <span *ngIf="this.etiquetaM?.invalid && (this.etiquetaM?.dirty || this.etiquetaM?.touched)"
+              class="texto-tam">
+              <!-- Errores con expresiones regulares -->
+              <div *ngIf="this.etiquetaM?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                Este campo es requerido.
+              </div>
+            </span>
+          </div>
+
+          <!-- Estado -->
+          <div class="form-group">
+            <label for="estadoM">Seleccione un estado:<span class="text-danger">*</span></label>
+            <!-- En tu template HTML -->
+            <p-dropdown [style]="{ 'width': '100%' }" [options]="this.estadoEvento" formControlName="estadoM">
+            </p-dropdown>
+
+            <!-- Validacion -->
+            <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+            <span *ngIf="this.estadoM?.invalid && (this.estadoM?.dirty || this.estadoM?.touched)" class="texto-tam">
+              <!-- Errores con expresiones regulares -->
+              <div *ngIf="this.estadoM?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                Este campo es requerido.
+              </div>
+            </span>
+
+          </div>
+          <!-- FIN Estado -->
+
+
+          <p class="text-right mt-3">Los campos con ( <span class="text-danger">*</span> ) son obligatorios</p>
+
+        </div>
+        <div class="modal-footer">
+          <!-- Botones cancelar y submit -->
+          <div class="btn-crear">
+            <button type="button" class="btn btn-danger text-uppercase"
+              (click)="this.cancelarModificarEvento(formDirectiveModificarEvento)">Cancelar</button>
+
+            <div *ngIf="this.btnSave; else notBtnSave" class="">
+              <button type="submit" class="ms-2 btn btn-primary waves-effect text-uppercase"
+                [disabled]="this.formulario.invalid">
+                Modificar evento
+              </button>
+            </div>
+
+            <ng-template #notBtnSave>
+              <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.notBtnSave">
+                <p-progressSpinner></p-progressSpinner>
+                <span class="ms-2">Guardando</span>
+              </button>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+  </form>
+  <!-- /.modal-dialog -->
+</div>
+<!-- Fin modal editar usuarios -->
+
+
+<!-- Modal editar punto -->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="display: none;"
+  aria-hidden="true" id="myModal_editar_punto">
+  <form #formDirectiveModificarPunto="ngForm" [formGroup]="this.formularioModificarPuntos" class="ps-4 pt-4 pe-4 pb-0"
+    (ngSubmit)="this.submitModificarPunto(formDirectiveModificarPunto)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger contenedor-header">
+          <h5 class="modal-title text-white text-uppercase" id="myLargeModalLabel">Formulario de registro de puntos</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>
+        <div class="modal-body">
+
+          <h4 class="mb-4">Modificar datos</h4>
+
+          <!-- Punto -->
+          <div class="form-group">
+            <label for="puntosM">Punto:<span class="text-danger">*</span> </label>
+            <div class="full-width">
+              <input type="text" pInputText formControlName="puntosM" id="puntosM"
+                placeholder="Ingrese un punto para esta agenda" [style]="{ 'width': '100%','display': 'block' }" />
+            </div>
+            <!-- Validacion -->
+            <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+            <span *ngIf="this.puntosM?.invalid && (this.puntosM?.dirty || this.puntosM?.touched)" class="texto-tam">
+              <!-- Errores con expresiones regulares -->
+              <div *ngIf="this.puntosM?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                Este campo es requerido.
+              </div>
+
+              <div *ngIf="this.puntosM?.hasError('maxlength')" class="animated fadeIn fast text-danger" id="">
+                Este campo solo acepta solo 200 letras.
+              </div>
+            </span>
+          </div>
+
+
+          <p class="text-right mt-3">Los campos con ( <span class="text-danger">*</span> ) son obligatorios</p>
+
+        </div>
+        <div class="modal-footer">
+          <!-- Botones cancelar y submit -->
+          <div class="btn-crear">
+            <button type="button" class="btn btn-danger text-uppercase"
+              (click)="this.cancelarModificarPunto(formDirectiveModificarPunto)">Cancelar</button>
+
+            <div *ngIf="this.btnSave; else notBtnSave" class="">
+              <button type="submit" class="ms-2 btn btn-primary waves-effect text-uppercase"
+                [disabled]="this.formulario.invalid">
+                Modificar evento
+              </button>
+            </div>
+
+            <ng-template #notBtnSave>
+              <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.notBtnSave">
+                <p-progressSpinner></p-progressSpinner>
+                <span class="ms-2">Guardando</span>
+              </button>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+  </form>
+  <!-- /.modal-dialog -->
+</div>
+<!-- Fin modal editar punto -->

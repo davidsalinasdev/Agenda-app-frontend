@@ -22,6 +22,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
 // Full calendar
 import { FullCalendarModule } from '@fullcalendar/angular';
 
+// Componentes primeNG
+import { PrimengModule } from '../primeng/primeng.module';
+
+
 @NgModule({
   declarations: [
     PagesComponent,
@@ -35,7 +39,11 @@ import { FullCalendarModule } from '@fullcalendar/angular';
     FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule,
-    FullCalendarModule // register FullCalendar with your app
+    FullCalendarModule,
+    PrimengModule,
+
+
+
   ],
   exports: [
     PagesComponent,

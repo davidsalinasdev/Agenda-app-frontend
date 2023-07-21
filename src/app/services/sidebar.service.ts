@@ -8,22 +8,22 @@ export class SidebarService {
   menu: any[] = [
 
     {
+      titulo: 'Agenda',
+      icono: 'nav-icon fas fa-calendar',
+      submenu: [
+        { titulo: 'calendario', url: '', icono: 'nav-icon fas fa-list' }
+      ]
+
+    },
+
+    {
       titulo: 'Usuarios',
       icono: 'nav-icon fas fa-user-plus',
       submenu: [
         { titulo: 'Usuarios', url: 'usuarios', icono: 'nav-icon fas fa-user', },
-        { titulo: 'Perfil de usuario', url: 'usuario', icono: 'nav-icon fas fa-pen' }
       ]
 
-    },
-    // {
-    //   titulo: 'Perfil de usuario',
-    //   icono: 'nav-icon fas fa-user-plus',
-    //   submenu: [
-    //     { titulo: 'Usuarios', url: 'usuarios', icono: 'nav-icon fas fa-user', },
-    //   ]
-    // },
-
+    }
   ];
 
   constructor() { }

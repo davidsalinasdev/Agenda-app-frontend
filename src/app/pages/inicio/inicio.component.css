@@ -1,0 +1,66 @@
+.calendario {
+  border: 1px solid #cccaca66;
+  border-top: 3px solid #02725a;
+
+  border-radius: 5px 5px;
+}
+
+.calendario--lista {
+  border-top: 3px solid #d38d0b;
+}
+
+.titulo-evento {
+  font-size: 1.3rem;
+  text-transform: uppercase;
+}
+
+.datos-calent--calendario {
+  /* margin-left: 0rem; */
+  margin-top: 2rem;
+}
+
+@media (min-width: 1200px) {
+  .datos-calent--calendario {
+    margin-top: 0rem;
+    margin-left: 2rem;
+  }
+}
+
+/* Tabla de datos */
+table {
+  border-collapse: collapse;
+  border: none;
+}
+
+table td,
+table th {
+  border: none;
+}
+
+/* FIN Tabla de datos */
+
+/* Botones crear eveto */
+.btn-crear {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* FIN botones crear eveto */
+
+/* Angular material */
+.full-width {
+  width: 100%;
+}
+
+/* Etiqueta de la lista */
+.etiqueta {
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.compartir-enlace {
+  display: flex;
+  justify-content: space-between;
+}

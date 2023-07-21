@@ -34,7 +34,8 @@ table {
 
 
 .table-header {
-  background: #343a40;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(20, 9, 121, 0.9416141456582633) 35%, rgba(0, 142, 255, 1) 100%);
 }
 
 .table-header__encabezado th {

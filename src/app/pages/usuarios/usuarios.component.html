@@ -1,8 +1,8 @@
-<div class="row">
+<div class="row animated fadeIn fast">
   <div class="col-12">
     <div class="card p-3">
       <div class="card-body">
-        <div class="creacion animated fadeIn fast">
+        <div class="creacion ">
           <div class="titulos-tabla">
             <h4>Lista de usuarios</h4>
             <p>Sistema de contrataciones</p>
@@ -23,7 +23,7 @@
         </div>
 
         <!-- Loading -->
-        <div *ngIf="this.cargando" class="row animated fadeIn fast">
+        <!-- <div *ngIf="this.cargando" class="row animated fadeIn fast">
           <div class="col-12">
             <div class="alert alert-secondary text-center">
               <h4 class="alert-heading">Cargando</h4>
@@ -31,64 +31,63 @@
               <p class="mb-0">Por favor espere</p>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- Tabla de datos -->
-        <div *ngIf="!this.cargando" class="fadeIn fast table-shadow">
-          <div class="table-responsive">
-            <table class="table">
-              <thead class="table-header">
-                <tr class="table-header__encabezado">
-                  <th style="width: 2%;">Codigo</th>
-                  <th>Nombres</th>
-                  <th>Ap. paterno</th>
-                  <th>Ap. materno</th>
-                  <th style="width: 110px;">Rol</th>
-                  <th style="width: 120px;">Estado</th>
-                  <th style="width: 150px;">Acciones</th>
-                </tr>
-              </thead>
-              <tbody class="table-cuerpo">
-                <tr
-                  *ngFor="let item of this.dataServidores | paginate: { itemsPerPage: this.per_page, currentPage: this.p, totalItems:this.total, id: 'paginate_one' }"
-                  class=" table-cuerpo__datos">
-                  <td>{{ item.id }}</td>
-                  <td>{{ item.nombres }}</td>
-                  <td>{{ item.paterno }}</td>
-                  <td>{{ item.materno }}</td>
-                  <td>{{ item.rol }}</td>
-                  <td>
-                    <span *ngIf="item.estado === 'habilitado'; else notHabilitado"
-                      class="p-1 bg-success text-white border rounded">{{item.estado}}</span>
-                    <ng-template #notHabilitado>
-                      <span class="p-1 bg-danger text-white border rounded">{{item.estado}}</span>
-                    </ng-template>
-                  </td>
-                  <td>
-                    <a class="text-warning btn-margen" (click)="this.modificarServidoresPublicos(item.id)">
-                      <i class="fas fa-pen"></i>
-                    </a>
+        <!-- <div *ngIf="!this.cargando" class="fadeIn fast table-shadow"> -->
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="table-header">
+              <tr class="table-header__encabezado">
+                <th style="width: 2%;">Codigo</th>
+                <th>Nombres</th>
+                <th>Ap. paterno</th>
+                <th>Ap. materno</th>
+                <th style="width: 110px;">Rol</th>
+                <th style="width: 120px;">Estado</th>
+                <th style="width: 150px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="table-cuerpo">
+              <tr
+                *ngFor="let item of this.dataServidores | paginate: { itemsPerPage: this.per_page, currentPage: this.p, totalItems:this.total, id: 'paginate_one' }"
+                class=" table-cuerpo__datos">
+                <td>{{ item.id }}</td>
+                <td>{{ item.nombres }}</td>
+                <td>{{ item.paterno }}</td>
+                <td>{{ item.materno }}</td>
+                <td>{{ item.rol }}</td>
+                <td>
+                  <span *ngIf="item.estado === 'habilitado'; else notHabilitado"
+                    class="p-1 bg-success text-white border rounded">{{item.estado}}</span>
+                  <ng-template #notHabilitado>
+                    <span class="p-1 bg-danger text-white border rounded">{{item.estado}}</span>
+                  </ng-template>
+                </td>
+                <td>
+                  <a class="text-warning btn-margen" (click)="this.modificarServidoresPublicos(item.id)">
+                    <i class="fas fa-pen"></i>
+                  </a>
 
-                    <a class="ml-4 text-danger"
-                      (click)="this.destroyServidorPublico(item.id,item.nombres,item.paterno,item.estado)">
-                      <i class="fas fa-trash"></i>
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <!-- Paginación de datos -->
-            <hr>
-            <div class="paginacion d-flex flex-nowrap justify-content-end pr-3">
-              <pagination-controls class="my-pagination" (pageChange)="this.pageChange($event)" previousLabel="Anterior"
-                nextLabel="Siguiente" [maxSize]="this.per_page" id="paginate_one">
-              </pagination-controls>
-              <p class="pt-1 paginacion__cantitems">Items: {{ this.total }}</p>
-            </div>
+                  <a class="ml-4 text-danger"
+                    (click)="this.destroyServidorPublico(item.id,item.nombres,item.paterno,item.estado)">
+                    <i class="fas fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Paginación de datos -->
+          <hr>
+          <div class="paginacion d-flex flex-nowrap justify-content-end pr-3">
+            <pagination-controls class="my-pagination" (pageChange)="this.pageChange($event)" previousLabel="Anterior"
+              nextLabel="Siguiente" [maxSize]="this.per_page" id="paginate_one">
+            </pagination-controls>
+            <p class="pt-1 paginacion__cantitems">Items: {{ this.total }}</p>
           </div>
         </div>
+        <!-- </div> -->
         <!-- FIN Tabla de datos -->
-
       </div>
     </div>
   </div>
@@ -258,7 +257,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">Cancelar</button>
-          <div *ngIf="this.btnSave; else notBtnSave" class="">
+          <div *ngIf="this.btnSave; else notBtnSave">
             <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.formulario.invalid">
               Guardar
             </button>
@@ -279,14 +278,13 @@
 <!-- Fin Modal crear usuarios -->
 
 <!-- Modal editar usuarios -->
-<!-- sample modal content -->
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="display: none;"
   aria-hidden="true" id="myModal_editar_usuario">
   <form #formDirective="ngForm" [formGroup]="this.formularioModificar" class="ps-4 pt-4 pe-4 pb-0"
     (ngSubmit)="submitModificar()">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
-        <div class="modal-header bg-warning contenedor-header">
+        <div class="modal-header bg-danger contenedor-header">
           <h5 class="modal-title text-white text-uppercase" id="myLargeModalLabel">Formulario de registro de
             usuarios</h5>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -465,5 +463,4 @@
   </form>
   <!-- /.modal-dialog -->
 </div>
-<!-- /.modal -->
 <!-- Fin modal editar usuarios -->
