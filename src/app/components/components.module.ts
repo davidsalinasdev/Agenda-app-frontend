@@ -2,19 +2,19 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Componentes de COMPONENTS
-import { FormularioComponent } from './formulario/formulario.component';
-
+import { MiagendaComponent } from './miagenda/miagenda.component';
 
 
 @NgModule({
   declarations: [
-    FormularioComponent
+
+    MiagendaComponent
   ],
   imports: [
     CommonModule
   ],
   exports: [
-    FormularioComponent
+    MiagendaComponent
   ]
 })
 export class ComponentsModule { }

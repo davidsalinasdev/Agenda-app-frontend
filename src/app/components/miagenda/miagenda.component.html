@@ -1,0 +1,49 @@
+<div class="miagenda miagenda--lista">
+
+  <h4 class="text-uppercase text-primary p-3">Mi Agenda</h4>
+
+  <div class="table-responsive p-2">
+    <table class="table">
+      <thead class="table-header">
+        <tr class="table-header__encabezado table-header__encabezado--color">
+          <!-- <th scope="col">#</th> -->
+          <th scope="col">Agenda</th>
+          <th scope="col">Lugar</th>
+          <th scope="col">Fecha y hora</th>
+          <th scope="col">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of this.dataAgenda; let i = index">
+          <tr
+            *ngIf="(this.usuario === item.users_id && item.evento.estado ==='Abierto') || (this.usuario === item.users_id && item.evento.estado ==='Cerrado')"
+            class="table-cuerpo__datos">
+            <!-- <th>{{ i + 1 }}.</th> -->
+            <td>{{ item.evento.evento }}</td>
+            <td>{{ item.evento.lugar_evento }}</td>
+            <td>{{ item.evento.fecha_hora_evento}}</td>
+
+            <!-- Utilizando ngSwitch -->
+            <td [ngSwitch]="item.evento.estado">
+              <span class="text-success" *ngSwitchCase="'Abierto'">
+                {{ item.evento.estado }}
+              </span>
+              <span class="text-purple" *ngSwitchCase="'Cerrado'">
+                {{ item.evento.estado }}
+              </span>
+              <span class="text-danger" *ngSwitchCase="'Concluido'">
+                {{ item.evento.estado }}
+              </span>
+              <span class="text-success" *ngSwitchDefault>
+                Abierto
+              </span>
+            </td>
+
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+
+</div>

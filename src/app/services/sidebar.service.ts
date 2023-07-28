@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class SidebarService {
 
-  menu: any[] = [
+  public menu: any[] = [
 
     {
       titulo: 'Agenda',
@@ -27,5 +27,21 @@ export class SidebarService {
   ];
 
   constructor() { }
+
+  // Recibimos el rol de usuario de administrador
+  public obtenerMenuSegunRol(rolUsuario: string): any[] {
+    // Si el rol del usuario es "agenda", devolver solo el menú de "Agenda".
+    if (rolUsuario === 'Funcionario') {
+      return this.menu.filter(item => item.titulo === 'Agenda');
+    }
+    // Si el rol del usuario es "usuarios", devolver solo el menú de "Usuarios".
+    else if (rolUsuario === 'Administrador') {
+      return this.menu;
+    }
+    // Si el rol del usuario no coincide con ninguno de los menús, devolver un array vacío.
+    else {
+      return [];
+    }
+  }
 }
 

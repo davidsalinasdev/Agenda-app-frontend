@@ -3,17 +3,34 @@
   <div class="card-body p-3">
 
     <div class="crear-evento">
-      <button class="btn btn-primary text-uppercase" (click)="this.crearEvento();"><i class="fas fa-plus"></i> Crear
+      <button class="btn btn-success text-uppercase" (click)="this.miAgenda();"><i class="fas fa-list"></i> Mi
         agenda</button>
+      <button class="btn btn-primary text-uppercase  ml-2" (click)="this.crearEvento();"><i class="fas fa-plus"></i>
+        Crear agenda</button>
     </div>
     <hr>
 
+
     <!-- Solo calendario -->
-    <div *ngIf="this.btnNewEvent; else notLista" class="row justify-content-center">
-      <div class="calendario col-12 col-xl-7 p-4">
+    <div *ngIf="this.btnNewEvent; else notLista" class="agenda-individual">
+
+      <div *ngIf="this.dataAgenda.length != 0;else notDataAgenda"
+        class="agenda-individual__agenda animated fadeIn fast">
+        <app-miagenda></app-miagenda>
+      </div>
+
+      <ng-template #notDataAgenda>
+        <div class="agenda-individual__agenda agenda-individual--size animated fadeIn fast">
+          <span class="text-uppercase text-success agenda-individual__texto">No tienes ningun evento en agenda</span>
+        </div>
+      </ng-template>
+
+
+      <div class="agenda-individual__calendario">
         <full-calendar [events]="this.events" [options]="calendarOptions"
           [style]="{ 'width': '100%','display': 'block' }"></full-calendar>
       </div>
+
     </div>
 
     <!-- Calendario con lista de eventos -->
@@ -24,10 +41,10 @@
         class="row justify-content-center datos-calend animated fadeIn fast ">
 
         <!-- Formulario -->
-        <div class="col-12 col-xl-3">
+        <div class="col-12 col-xl-4">
 
           <div class="calendario calendario--lista">
-            <h4 class="text-uppercase mb-0 p-2">Formulario de registro</h4>
+            <h4 class="text-uppercase mb-0 p-4">Formulario de registro</h4>
             <hr class="mt-0 mb-0">
 
             <form #formDirective="ngForm" [formGroup]="this.formulario" class="p-3" (ngSubmit)="this.submit()">
@@ -80,7 +97,8 @@
                 <label for="fecha_hora_evento">Fecha y hora:<span class="text-danger">*</span></label>
 
                 <input type="datetime-local" pInputText style="width: 100%;" formControlName="fecha_hora_evento"
-                  placeholder="Ingrese fecha y hora de la agenda">
+                  placeholder="Ingrese fecha y hora de la agenda" (blur)="this.validarFecha()"
+                  (keyup)="this.validarFecha()">
 
                 <!-- Validacion -->
                 <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
@@ -93,6 +111,9 @@
                     Este campo es requerido.
                   </div>
                 </span>
+                <div *ngIf="this.fechaInvalida===false" class="animated fadeIn fast text-danger" id="">
+                  ¡Error! La fecha y hora es anterior a la actual.
+                </div>
               </div>
 
 
@@ -124,7 +145,7 @@
                 <div *ngIf="this.btnSave; else notBtnSave" class="">
                   <button type="submit" class="ms-2 btn btn-primary waves-effect text-uppercase"
                     [disabled]="this.formulario.invalid">
-                    Crear evento
+                    Crear agenda
                   </button>
                 </div>
 
@@ -142,7 +163,7 @@
         </div>
 
         <!-- Calendario -->
-        <div class="datos-calent--calendario calendario col-12  col-xl-7 p-4 animated fadeIn fast">
+        <div class="datos-calent--calendario calendario col-12  col-xl-6 p-4 animated fadeIn fast">
           <full-calendar [style]="{ 'width': '100%','display': 'block' }" [events]="this.events"
             [options]="calendarOptions"></full-calendar>
         </div>
@@ -160,11 +181,12 @@
                 <div class="compartir-enlace">
                   <p class="titulo-evento  mt-3">Datos de agenda</p>
 
-                  <div class=" mt-3">
+                  <!-- Boton compartir enlace -->
+                  <!-- <div class=" mt-3">
                     <a class="btn btn-success text-uppercase text-left" (click)="this.compartirEnWhatsApp()"><i
                         class="fas fa-share-alt text-white"></i>
                       Compartir enlace</a>
-                  </div>
+                  </div> -->
                 </div>
                 <hr>
                 <!-- Lista de creacion de eventos -->
@@ -172,39 +194,49 @@
 
                 <div class="table-responsive">
                   <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Codigo</th>
+                    <thead class="table-header">
+                      <tr class="table-header__encabezado">
                         <th>Motivo agenda</th>
                         <th>lugar</th>
                         <th>Fecha y hora</th>
                         <th>Estado</th>
                         <th>Etiqueta</th>
-                        <th>Acciones</th>
+
+                        <ng-container *ngIf="this.estadoConcluido">
+                          <th *ngIf="this.usuario===this.newEventCreate.users_id">Acciones</th>
+                        </ng-container>
+
+
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>{{ this.newEventCreate.id }}</td>
+                      <tr class="table-cuerpo__datos">
                         <td>{{ this.newEventCreate.evento }}</td>
                         <td>{{ this.newEventCreate.lugar_evento }}</td>
                         <td>{{ this.fechaEventoGlobal }} | {{ this.horaEventoGlobal }} </td>
-                        <td>{{ this.newEventCreate.estado }}</td>
+
+                        <td [ngClass]="this.colorEstadoEvento">{{ this.newEventCreate.estado }}</td>
+
                         <td>
                           <span class="etiqueta" [ngStyle]="{'background-color': this.newEventCreate.etiqueta, 'color':
                           this.newEventCreate.etiqueta }">-----</span>
                         </td>
-                        <td>
-                          <a type="button" class="text-warning btn-margen"
-                            (click)="this.cargarModificarEvento(this.newEventCreate.id )">
-                            <i class="fas fa-pen"></i>
-                          </a>
 
-                          <a class="ml-4 text-danger"
-                            (click)="this.destroyEvento(this.newEventCreate.id, this.newEventCreate.evento)">
-                            <i class="fas fa-trash"></i>
-                          </a>
-                        </td>
+                        <ng-container *ngIf="this.estadoConcluido">
+                          <!-- Controlar rol de usuario -->
+                          <td *ngIf="this.usuario===this.newEventCreate.users_id">
+                            <a class="text-warning btn-margen puntero"
+                              (click)="this.cargarModificarEvento(this.newEventCreate.id )">
+                              <i class="fas fa-pen"></i>
+                            </a>
+
+                            <a class="ml-4 text-danger puntero"
+                              (click)="this.destroyEvento(this.newEventCreate.id, this.newEventCreate.evento)">
+                              <i class="fas fa-trash"></i>
+                            </a>
+                          </td>
+                        </ng-container>
+
                       </tr>
 
                     </tbody>
@@ -221,88 +253,171 @@
                 <!-- Lista de puntos a tratar -->
                 <ng-template #notTablaPuntos>
 
-                  <div class="animated fadeIn fast">
-                    <p class="text-primary text-uppercase">Puntos a tratar:</p>
+                  <!-- Cuando esta concluido -->
+                  <ng-container *ngIf="this.estadoConcluido; else thenEstadoConcluido">
+                    <!-- Cuando esta Cerrado -->
+                    <div *ngIf="this.bandAgregarPunto; else notBandAgregarPunto">
 
-                    <div class="table-responsive">
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Punto</th>
-                            <th>Fecha registro</th>
-                            <th>Agregado por</th>
-                            <th>Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <!-- Primer Punto -->
-                          <tr>
-                            <td [width]="10">1.</td>
-                            <td>{{ this.newEventCreate.evento }}</td>
-                            <td>{{ this.fechaEventoGlobal }}</td>
-                            <td>{{ this.nombreUserPunto }}</td>
-                            <td>
-                              <span class="text-success">Sin acciones</span>
-                            </td>
-                          </tr>
-                          <tr *ngFor="let item of this.puntosCreados; let i = index">
-                            <td [width]="10">{{ i + 2 }}.</td>
-                            <td>{{ item.puntos }}</td>
-                            <td>{{ item.created_at }}</td>
-                            <td>{{ item.usuario }}</td>
-                            <td>
-                              <a class="text-warning btn-margen" (click)="this.cargarModificarPunto(item.id )">
-                                <i class="fas fa-pen"></i>
-                              </a>
+                      <div class="animated fadeIn fast">
+                        <p class="text-primary text-uppercase">Orden del dia:</p>
 
-                              <a class="ml-4 text-danger" (click)="this.destroyPunto(item.id,item.eventos_id)">
-                                <i class="fas fa-trash"></i>
-                              </a>
-                            </td>
-                          </tr>
+                        <div class="table-responsive">
+                          <table class="table table-bordered">
+                            <thead>
+                              <tr class="table-header__encabezado table-header__encabezado--color">
+                                <th>#</th>
+                                <th>Punto</th>
+                                <th>Responsable</th>
+                                <ng-container *ngIf="this.estadoConcluido">
+                                  <th *ngIf="this.bandAgregarPunto">Acciones</th>
+                                </ng-container>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <!-- Primer Punto -->
+                              <tr class="table-cuerpo__datos">
+                                <td [width]="10">1.</td>
+                                <td>{{ this.newEventCreate.evento }}</td>
 
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                                <!-- Responsable -->
+                                <td>{{ this.nombreUserPunto }}</td>
 
-                  <hr>
+                                <ng-container *ngIf="this.estadoConcluido">
+                                  <td *ngIf="this.bandAgregarPunto">
+                                    <span class="text-gray">Sin acciones</span>
+                                  </td>
+                                </ng-container>
 
-                  <!-- Formulario para agregar punto a una reunión -->
-                  <p class="text-uppercase mb-0 p-2">Registro de nuevos puntos</p>
-                  <form #formDirectivePuntos="ngForm" [formGroup]="this.formularioPuntos" class="p-3"
-                    (ngSubmit)="this.submitPuntos(formDirectivePuntos)">
-                    <div class="form-group row">
-                      <label for="puntos">Punto:</label>
+                              </tr>
 
-                      <input type="text" pInputText class="form-control" id="puntos" formControlName="puntos"
-                        placeholder="Ingrese un punto para este evento">
 
-                    </div>
+                              <!-- Mostrar solo para el creador -->
+                              <ng-container *ngIf="this.usuario === this.newEventCreate.users_id; else notCreador">
+                                <tr *ngFor="let item of this.puntosCreados; let i = index" class="table-cuerpo__datos">
+                                  <td [width]="10">{{ i + 2 }}.</td>
+                                  <td>{{ item.puntos }}</td>
+                                  <td>{{ item.user.nombres }} {{ item.user.paterno }}</td>
 
-                    <!-- Botones cancelar y submit -->
-                    <div class="btn-crear">
 
-                      <button type="button" class="btn btn-danger text-uppercase"
-                        (click)="this.salirCrearEventosPuntos()">Salir</button>
+                                  <ng-container *ngIf="this.estadoConcluido">
+                                    <!-- Para controlar abierto o cerrado -->
+                                    <ng-container *ngIf="this.bandAgregarPunto">
+                                      <td>
+                                        <a class="text-warning btn-margen puntero"
+                                          (click)="this.cargarModificarPunto(item.id )">
+                                          <i class="fas fa-pen"></i>
+                                        </a>
 
-                      <div *ngIf="this.btnSave; else notBtnSave">
-                        <button type="submit" class="ms-2 btn btn-primary waves-effect text-uppercase"
-                          [disabled]="this.formularioPuntos.invalid">
-                          Agregar punto
-                        </button>
+                                        <a class="ml-4 text-danger puntero"
+                                          (click)="this.destroyPunto(item.id, item.eventos_id, item.users_id)">
+                                          <i class="fas fa-trash"></i>
+                                        </a>
+                                      </td>
+                                    </ng-container>
+                                  </ng-container>
+                                </tr>
+                              </ng-container>
+
+                              <ng-template #notCreador>
+                                <tr *ngFor="let item of this.puntosCreados; let i = index" class="table-cuerpo__datos">
+                                  <td [width]="10">{{ i + 2 }}.</td>
+                                  <td>{{ item.puntos }}</td>
+                                  <td>{{ item.user.nombres }} {{ item.user.paterno }}</td>
+
+                                  <ng-container *ngIf="this.estadoConcluido">
+
+                                    <ng-container *ngIf="this.bandAgregarPunto">
+
+                                      <td *ngIf="this.usuario===item.users_id ; else notUsuario">
+                                        <a class="text-warning btn-margen puntero"
+                                          (click)="this.cargarModificarPunto(item.id )">
+                                          <i class="fas fa-pen"></i>
+                                        </a>
+
+                                        <a class="ml-4 text-danger puntero"
+                                          (click)="this.destroyPunto(item.id,item.eventos_id,item.users_id)">
+                                          <i class="fas fa-trash"></i>
+                                        </a>
+                                      </td>
+
+                                      <ng-template #notUsuario>
+                                        <td>
+                                          <a class="puntero--disabled">
+                                            <i class="fas fa-pen icon-punto"></i>
+                                          </a>
+
+                                          <a class="ml-4 puntero--disabled">
+                                            <i class="fas fa-trash icon-punto"></i>
+                                          </a>
+                                        </td>
+                                      </ng-template>
+                                    </ng-container>
+
+                                  </ng-container>
+
+                                </tr>
+
+                              </ng-template>
+
+
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
 
-                      <ng-template #notBtnSave>
-                        <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.notBtnSave">
-                          <p-progressSpinner></p-progressSpinner>
-                          <span class="ms-2">Guardando</span>
-                        </button>
-                      </ng-template>
+                      <hr>
+
+                      <!-- Formulario para agregar punto a una reunión -->
+                      <p class="text-uppercase mb-0 mt-5">Registro de nuevos puntos</p>
+                      <form #formDirectivePuntos="ngForm" [formGroup]="this.formularioPuntos" class="p-3"
+                        (ngSubmit)="this.submitPuntos(formDirectivePuntos)">
+                        <div class="form-group row">
+                          <label for="puntos">Punto:</label>
+
+                          <input type="text" pInputText class="form-control" id="puntos" formControlName="puntos"
+                            placeholder="Ingrese un punto para este evento">
+
+                        </div>
+
+                        <!-- Botones cancelar y submit -->
+                        <div class="btn-crear">
+
+                          <button type="button" class="btn btn-danger text-uppercase"
+                            (click)="this.salirCrearEventosPuntos()">Salir</button>
+
+                          <div *ngIf="this.btnSave; else notBtnSave">
+                            <button type="submit" class="ms-2 btn btn-primary waves-effect text-uppercase"
+                              [disabled]="this.formularioPuntos.invalid">
+                              Agregar punto
+                            </button>
+                          </div>
+
+                          <ng-template #notBtnSave>
+                            <button type="submit" class="ms-2 btn btn-primary waves-effect"
+                              [disabled]="this.notBtnSave">
+                              <p-progressSpinner></p-progressSpinner>
+                              <span class="ms-2">Guardando</span>
+                            </button>
+                          </ng-template>
+                        </div>
+
+                      </form>
+
                     </div>
 
-                  </form>
+                    <ng-template #notBandAgregarPunto>
+                      <p class="text-uppercase  text-danger">Esta agenda esta cerrada</p>
+                    </ng-template>
+                    <!-- FIN cuando esta Cerrado -->
+
+                  </ng-container>
+                  <!-- FIN cuando esta concluido -->
+
+                  <ng-template #thenEstadoConcluido>
+                    <p class="text-uppercase  text-danger">Esta agenda esta Concluida</p>
+                  </ng-template>
+
+
                 </ng-template>
 
               </div>
@@ -355,7 +470,7 @@
               </div>
 
               <div *ngIf="this.eventoM?.hasError('maxlength')" class="animated fadeIn fast text-danger" id="">
-                Este campo solo acepta solo 70 letras.
+                Este campo solo acepta solo 200 letras.
               </div>
             </span>
           </div>
@@ -377,7 +492,7 @@
               </div>
 
               <div *ngIf="this.lugar_eventoM?.hasError('maxlength')" class="animated fadeIn fast text-danger" id="">
-                Este campo solo acepta solo 70 letras.
+                Este campo solo acepta solo 150 letras.
               </div>
             </span>
           </div>
@@ -388,7 +503,7 @@
 
             <input type="datetime-local" id="fecha_hora_eventoM" pInputText style="width: 100%;"
               formControlName="fecha_hora_eventoM" placeholder="Ingrese fecha y hora de la agenda">
-
+            <span class="text-info">Modifica este campo solo si esta seguro!</span>
             <!-- Validacion -->
             <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
             <span
@@ -399,6 +514,7 @@
                 Este campo es requerido.
               </div>
             </span>
+
           </div>
 
           <!-- Etiqueta -->
@@ -448,10 +564,10 @@
             <button type="button" class="btn btn-danger text-uppercase"
               (click)="this.cancelarModificarEvento(formDirectiveModificarEvento)">Cancelar</button>
 
-            <div *ngIf="this.btnSave; else notBtnSave" class="">
+            <div *ngIf="this.btnSave; else notBtnSave">
               <button type="submit" class="ms-2 btn btn-primary waves-effect text-uppercase"
-                [disabled]="this.formulario.invalid">
-                Modificar evento
+                [disabled]="this.formularioModificarEvento.invalid">
+                Modificar agenda
               </button>
             </div>
 
@@ -520,7 +636,7 @@
 
             <div *ngIf="this.btnSave; else notBtnSave" class="">
               <button type="submit" class="ms-2 btn btn-primary waves-effect text-uppercase"
-                [disabled]="this.formulario.invalid">
+                [disabled]="this.formularioModificarPuntos.invalid">
                 Modificar evento
               </button>
             </div>

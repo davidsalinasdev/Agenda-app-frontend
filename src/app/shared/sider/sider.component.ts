@@ -23,9 +23,7 @@ export class SiderComponent implements OnInit {
 
   constructor(
     private sidebarServices: SidebarService,
-  ) {
-    this.menuItems = this.sidebarServices.menu;
-  }
+  ) { }
 
   ngOnInit(): void {
 
@@ -41,6 +39,16 @@ export class SiderComponent implements OnInit {
       this.token = token;
       this.rol = identity.rol;
     }
+
+    // Menu segun el rol de usuario
+    this.menuItems = this.sidebarServices.obtenerMenuSegunRol(this.rol);
+
+    // console.log(this.usuario);
+    // console.log(this.token);
+    // console.log(this.rol);
+
+
+
   }
 
 }

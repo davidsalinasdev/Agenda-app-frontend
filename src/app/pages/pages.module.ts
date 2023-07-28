@@ -9,6 +9,7 @@ import { PagesComponent } from './pages.component';
 import { InicioComponent } from './inicio/inicio.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 
+
 // Modulo shared
 import { SharedModule } from '../shared/shared.module';
 
@@ -25,12 +26,15 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 // Componentes primeNG
 import { PrimengModule } from '../primeng/primeng.module';
 
+// Componentes reutilizables
+import { ComponentsModule } from '../components/components.module';
+
 
 @NgModule({
   declarations: [
     PagesComponent,
     InicioComponent,
-    UsuariosComponent
+    UsuariosComponent,
   ],
   imports: [
     CommonModule,
@@ -41,9 +45,7 @@ import { PrimengModule } from '../primeng/primeng.module';
     NgxPaginationModule,
     FullCalendarModule,
     PrimengModule,
-
-
-
+    ComponentsModule
   ],
   exports: [
     PagesComponent,

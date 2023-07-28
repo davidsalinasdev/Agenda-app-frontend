@@ -5,6 +5,41 @@
   border-radius: 5px 5px;
 }
 
+.agenda-individual {
+  display: flex;
+  flex-direction: column;
+}
+
+.agenda-individual__agenda {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.agenda-individual__calendario {
+  border: 1px solid #cccaca66;
+  border-top: 3px solid #02725a;
+  border-radius: 5px 5px;
+  width: 100%;
+}
+
+@media (min-width: 1400px) {
+
+  .agenda-individual {
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .agenda-individual__agenda {
+    width: 40%;
+    margin-bottom: 0px;
+  }
+
+  .agenda-individual__calendario {
+    width: 50%;
+  }
+}
+
 .calendario--lista {
   border-top: 3px solid #d38d0b;
 }
@@ -22,7 +57,7 @@
 @media (min-width: 1200px) {
   .datos-calent--calendario {
     margin-top: 0rem;
-    margin-left: 2rem;
+    margin-left: 1rem;
   }
 }
 
@@ -56,11 +91,64 @@ table th {
 
 /* Etiqueta de la lista */
 .etiqueta {
-  padding: 4px 10px;
+  padding: 1px 10px;
   border-radius: 6px;
 }
 
 .compartir-enlace {
   display: flex;
   justify-content: space-between;
+}
+
+.table-header {
+  background-color: rgb(32, 109, 197);
+}
+
+.table-header__encabezado th {
+  font-size: 14px !important;
+  color: #FFFFFF;
+  padding: 14.5px;
+}
+
+.table-cuerpo__datos {
+  font-size: 15px !important;
+}
+
+.table-cuerpo__datos td {
+  color: rgba(0, 0, 0, .87);
+}
+
+.table-header__encabezado--color th {
+  color: rgba(0, 0, 0, .87);
+}
+
+.puntero {
+  cursor: pointer;
+}
+
+
+.puntero--disabled {
+  /* Estilos para el botón deshabilitado */
+  pointer-events: none;
+  /* Evita que el botón sea interactivo */
+  opacity: 0.3;
+  /* Puedes ajustar la opacidad para indicar que está deshabilitado */
+}
+
+.icon-punto {
+  color: #353e5385;
+}
+
+.agenda-individual--size {
+  width: 100% !important;
+}
+
+@media (min-width: 1400px) {
+  .agenda-individual--size {
+    width: 20% !important;
+  }
+}
+
+.agenda-individual__texto {
+  font-size: 1.5rem;
 }

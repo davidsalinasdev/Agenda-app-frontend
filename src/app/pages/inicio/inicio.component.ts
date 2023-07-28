@@ -13,6 +13,11 @@ import { FormArray, FormBuilder, FormGroup, FormGroupDirective, NgForm, Validato
 // Servicios
 import { EventoService } from 'src/app/services/evento.service';
 import { PuntosService } from 'src/app/services/puntos.service';
+import { MiagendaService } from 'src/app/services/miagenda.service';
+
+
+import { SharedDataService } from '../../services/shared-data.service';
+
 
 // Alertas
 import Swal from 'sweetalert2';
@@ -25,6 +30,7 @@ import { Evento } from 'src/app/models/eventos.model';
 import { Punto } from 'src/app/models/puntos.model';
 
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+
 
 // Interfaces
 interface EstadoEvento {
@@ -112,27 +118,49 @@ export class InicioComponent implements OnInit {
   // Nombre para puntos
   public nombreUserPunto!: string;
 
+  // Para controlar botones  de roles
+  public isButtonDisabled: boolean = false;
+
+  // Bandera para mostrar el agregar puntos
+  public bandAgregarPunto: boolean = true;
+
+  // Estado color evento
+  public colorEstadoEvento!: string;
+
+  // Boton concluido
+  public estadoConcluido: boolean = true;
+
+  public dataAgenda: any = [];
+
+  public fechaInvalida: boolean = true;
+
+  public fechaModificar!: string;
+
   constructor(
     private fb: FormBuilder,
     private eventosServices: EventoService,
     private puntosServices: PuntosService,
     private toastr: ToastrService,
     private renderer: Renderer2,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private sharedDataServices: SharedDataService,
+    private miAgendaServices: MiagendaService
   ) {
     this.enlaceCompartirSeguro = this.sanitizer.bypassSecurityTrustUrl(this.enlaceCompartir);
 
   }
 
   ngOnInit(): void {
+
     this.scrollToTop();
     this.crearFormulario();
     this.crearFormularioModificarEvento();
+    this.indexAgenda();
+
     const user = localStorage.getItem('access');
     if (user) {
       const { token, identity } = JSON.parse(user);
       this.usuario = identity.sub;
-      this.nombreUserPunto = `${identity.nombres} ${identity.paterno}`;
     }
 
   }
@@ -188,8 +216,8 @@ export class InicioComponent implements OnInit {
 
     // Formulario par crear un evento
     this.formularioModificarEvento = this.fb.group({
-      eventoM: ['', Validators.compose([Validators.required, Validators.maxLength(30)])],
-      lugar_eventoM: ['', Validators.compose([Validators.required, Validators.maxLength(70)])],
+      eventoM: ['', Validators.compose([Validators.required, Validators.maxLength(200)])],
+      lugar_eventoM: ['', Validators.compose([Validators.required, Validators.maxLength(150)])],
       fecha_hora_eventoM: ['', Validators.compose([Validators.required])],
       etiquetaM: ['', Validators.compose([Validators.required])],
       estadoM: ['', Validators.compose([Validators.required])],
@@ -238,71 +266,123 @@ export class InicioComponent implements OnInit {
   public submit() {
 
 
-    const formData = {
-      evento: this.formulario.value.evento,
-      lugar_evento: this.formulario.value.lugar_evento,
-      fecha_hora_evento: this.formulario.value.fecha_hora_evento,
-      etiqueta: this.formulario.value.etiqueta,
-      users_id: this.usuario,
+    const fechaEvento = new Date(this.formulario.value.fecha_hora_evento);
+    const fechaActual = new Date();
+    this.fechaInvalida = fechaEvento >= fechaActual;
+    if (this.fechaInvalida) {
+      const formData = {
+        evento: this.formulario.value.evento,
+        lugar_evento: this.formulario.value.lugar_evento,
+        fecha_hora_evento: this.formulario.value.fecha_hora_evento,
+        etiqueta: this.formulario.value.etiqueta,
+        users_id: this.usuario,
+      }
+
+      this.btnSave = false;
+
+      this.eventosServices.storeEventos(formData)
+        .subscribe({
+          next: ({ status, message, evento }) => {
+            if (status === 'success') {
+
+              // Fecha
+              const dateString = evento.fecha_hora_evento;
+              this.fechaEventoGlobal = dateString.substring(0, 10);
+
+              // Hora
+              const timeString = evento.fecha_hora_evento;
+              this.horaEventoGlobal = timeString.split('T')[1];
+
+              this.newEventCreate = evento;
+
+              switch (this.newEventCreate.estado) {
+                case 'Abierto':
+                  this.colorEstadoEvento = 'text-success';
+                  this.estadoConcluido = true;
+                  break;
+                case 'Cerrado':
+                  this.colorEstadoEvento = 'text-indigo';
+                  this.estadoConcluido = true;
+                  break;
+
+                case 'Concluido':
+                  this.colorEstadoEvento = 'text-danger';
+                  this.estadoConcluido = false;
+                  break;
+
+                default:
+                  this.colorEstadoEvento = 'text-purple';
+                  break;
+              }
+
+
+              const { nombres, paterno } = this.newEventCreate.user;
+
+              this.nombreUserPunto = `${nombres} ${paterno}`;
+
+              this.idEventoGlobal = evento.id;
+
+              this.indexEventos();
+
+              this.mostrarTabla = false;
+
+              this.mostrarTablaPuntos = false;
+
+              this.toastr.success(`${message}`, 'Agenda institucional-GADC');
+            } else {
+              this.toastr.error(message, 'Agenda institucional-GADC');
+            }
+          },
+          error: (err: any) => {
+
+            this.btnSave = true;
+
+            if (err.error.errors.evento) {
+              Swal.fire('Error', err.error.errors.evento[0], 'error')
+            } else {
+              Swal.fire('Error', err.error.message, 'error')
+            }
+
+          },
+          complete: () => {
+            this.btnSave = true;
+          }
+        });
+
+    } else {
+      Swal.fire({
+        icon: 'error',
+        text: 'La fecha y hora es anterior a la actual.!',
+      })
     }
 
-    this.btnSave = false;
-
-    this.eventosServices.storeEventos(formData)
-      .subscribe({
-        next: ({ status, message, evento }) => {
-          if (status === 'success') {
-
-            // Fecha
-            const dateString = evento.fecha_hora_evento;
-            this.fechaEventoGlobal = dateString.substring(0, 10);
-
-            // Hora
-            const timeString = evento.fecha_hora_evento;
-            this.horaEventoGlobal = timeString.split('T')[1];
-
-            this.newEventCreate = evento;
-            console.log(this.newEventCreate);
-
-            this.idEventoGlobal = evento.id;
-
-            this.indexEventos();
-            this.mostrarTabla = false;
-
-            this.toastr.success(`${message}`, 'Agenda institucional-GADC');
-          } else {
-            this.toastr.error(message, 'Agenda institucional-GADC');
-          }
-        },
-        error: (err: any) => {
-
-          this.btnSave = true;
-
-          if (err.error.errors.evento) {
-            Swal.fire('Error', err.error.errors.evento[0], 'error')
-          } else {
-            Swal.fire('Error', err.error.message, 'error')
-          }
-
-        },
-        complete: () => {
-          this.btnSave = true;
-        }
-      });
 
   }
-
 
   /**
   * Registrar nuevos puntos para un evento
   */
   public submitPuntos(formDirectivePuntos: FormGroupDirective) {
 
-    const formData = {
-      puntos: this.formularioPuntos.value.puntos,
-      eventos_id: this.idEventoGlobal,
-      usuario: this.nombreUserPunto
+    let formData: any;
+
+    if (this.usuario === this.newEventCreate.users_id) {
+      formData = {
+        puntos: this.formularioPuntos.value.puntos,
+        eventos_id: this.idEventoGlobal,
+        users_id: this.usuario,
+        original: 'si'
+      }
+    } else {
+      formData = {
+        puntos: this.formularioPuntos.value.puntos,
+        eventos_id: this.idEventoGlobal,
+        users_id: this.usuario,
+        original: 'no'
+      }
     }
+
+
 
     this.btnSave = false;
 
@@ -346,6 +426,8 @@ export class InicioComponent implements OnInit {
     this.eventosServices.indexEventos()
       .subscribe({
         next: ({ evento }) => {
+
+          // Angular-calendar
           this.calendarOptions = {
             initialView: 'dayGridMonth',
             plugins: [dayGridPlugin],
@@ -392,7 +474,9 @@ export class InicioComponent implements OnInit {
     this.puntosServices.indexPuntos(idEvento)
       .subscribe({
         next: ({ puntos }) => {
+
           this.puntosCreados = puntos;
+
         }
       })
   }
@@ -415,7 +499,7 @@ export class InicioComponent implements OnInit {
   //   console.log(arg);
   // }
 
-  handleEventClick(arg: EventClickArg) {
+  public handleEventClick(arg: EventClickArg) {
     // Id del evento con su alias
     const { publicId: idEvento } = arg.event._def.extendedProps;
 
@@ -426,6 +510,8 @@ export class InicioComponent implements OnInit {
 
           this.scrollToTop();
 
+          this.indexAgenda();
+
           // Fecha
           const dateString = evento.fecha_hora_evento;
           this.fechaEventoGlobal = dateString.substring(0, 10);
@@ -435,6 +521,52 @@ export class InicioComponent implements OnInit {
           this.horaEventoGlobal = timeString.split('T')[1];
 
           this.newEventCreate = evento;
+
+          switch (this.newEventCreate.estado) {
+            case 'Abierto':
+              this.colorEstadoEvento = 'text-success';
+              this.estadoConcluido = true;
+              break;
+            case 'Cerrado':
+              this.colorEstadoEvento = 'text-indigo';
+              this.estadoConcluido = true;
+              break;
+
+            case 'Concluido':
+              this.colorEstadoEvento = 'text-danger';
+              this.estadoConcluido = false;
+              break;
+
+            default:
+              this.colorEstadoEvento = 'text-purple';
+              break;
+          }
+
+
+
+          const { nombres, paterno, id } = evento.user;
+
+          if (this.newEventCreate.estado === 'Cerrado' && this.usuario === id) {
+
+            // console.log('1');
+
+          } else if (this.newEventCreate.estado === 'Cerrado' && this.usuario != id) {
+
+            this.bandAgregarPunto = false;
+            // console.log('2');
+
+
+          } else if (this.newEventCreate.estado === 'Abierto' && this.usuario === id) {
+
+            this.bandAgregarPunto = true;
+            // console.log('3');
+
+          }
+
+
+
+          this.nombreUserPunto = `${nombres} ${paterno}`;
+
           // console.log(this.newEventCreate);
 
           this.idEventoGlobal = evento.id;
@@ -487,6 +619,13 @@ export class InicioComponent implements OnInit {
       formDirective.resetForm();
       this.formulario.reset();
     }
+  }
+
+  // Se dirige hacia mi agenda
+  public miAgenda() {
+    this.scrollToTop();
+    this.indexAgenda();
+    this.btnNewEvent = true;
   }
 
   /**
@@ -565,12 +704,17 @@ export class InicioComponent implements OnInit {
    */
   public submitModificarEvento(formDirectiveModificarEvento: FormGroupDirective) {
 
+    const fechaEvento = new Date(this.formularioModificarEvento.value.fecha_hora_eventoM);
+    const fechaActual = new Date();
+    this.fechaInvalida = fechaEvento >= fechaActual;
+
+
     const formData: Evento = {
       evento: this.formularioModificarEvento.value.eventoM,
       lugar_evento: this.formularioModificarEvento.value.lugar_eventoM,
       fecha_hora_evento: this.formularioModificarEvento.value.fecha_hora_eventoM,
       etiqueta: this.formularioModificarEvento.value.etiquetaM,
-      estado: this.formularioModificarEvento.value.estadoM,
+      estado: this.formularioModificarEvento.value.estadoM
     }
 
     this.btnSave = false;
@@ -578,23 +722,57 @@ export class InicioComponent implements OnInit {
     this.eventosServices.updateEvento(formData, this.idEventoModificar)
       .subscribe({
 
-        next: ({ message, evento }) => {
-          $('#myModal_editar_evento').modal('hide');
+        next: ({ status, message, evento }) => {
+          if (status === 'success') {
+            $('#myModal_editar_evento').modal('hide');
 
-          // Actualiza el calendario
-          this.indexEventos();
+            // Actualiza el calendario
+            this.indexEventos();
 
-          console.log(evento);
+            // Fecha
+            const dateString = evento.fecha_hora_evento;
+            this.fechaEventoGlobal = dateString.substring(0, 10);
+
+            // Hora
+            const timeString = evento.fecha_hora_evento;
+            this.horaEventoGlobal = timeString.split('T')[1];
 
 
-          // Actualiza la tabla
-          this.newEventCreate = evento;
+            // Actualiza la tabla
+            this.newEventCreate = evento;
 
-          // Actualiza la tabla de puntos
-          this.indexPuntos(evento.id);
+            switch (this.newEventCreate.estado) {
+              case 'Abierto':
+                this.colorEstadoEvento = 'text-success';
+                this.estadoConcluido = true;
+                break;
+              case 'Cerrado':
+                this.colorEstadoEvento = 'text-indigo';
+                this.estadoConcluido = true;
+                break;
 
-          this.toastr.success(`${message}`, '¡Modificación Correcta!');
-          this.cancelarModificarEvento(formDirectiveModificarEvento);
+              case 'Concluido':
+                this.colorEstadoEvento = 'text-danger';
+                this.estadoConcluido = false;
+                break;
+
+              default:
+                this.colorEstadoEvento = 'text-purple';
+                break;
+            }
+
+            // Actualiza la tabla de puntos
+            this.indexPuntos(evento.id);
+
+            this.toastr.success(`${message}`, '¡Modificación Correcta!');
+            this.cancelarModificarEvento(formDirectiveModificarEvento);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              text: `${message}`,
+            })
+          }
+
         },
         error: (err: any) => {
           console.log(err);
@@ -608,7 +786,6 @@ export class InicioComponent implements OnInit {
         }
 
       });
-
 
   }
 
@@ -664,6 +841,7 @@ export class InicioComponent implements OnInit {
             next: ({ status }) => {
               if (status === 'success') {
                 this.indexEventos();
+                this.indexAgenda();
                 Swal.fire(
                   `${evento}`,
                   `A sido eliminado correctamente`,
@@ -755,21 +933,90 @@ export class InicioComponent implements OnInit {
   /**
    * destroyPunto
    */
-  public destroyPunto(id: number, eventos_id: number) {
+  public destroyPunto(id: number, eventos_id: number, users_id: number) {
 
 
     this.puntosServices.destroyPunto(id)
       .subscribe({
         next: ({ status, message }) => {
+
+          // console.log(this.newEventCreate);
+
           if (status === 'success') {
-            this.indexPuntos(eventos_id);
-            this.toastr.error(message, 'Agenda institucional-GADC');
+            // console.log(status);
+
+            this.puntosServices.indexPuntos(eventos_id)
+              .subscribe({
+                next: ({ puntos }) => {
+
+                  // Filtrar por id y estado
+                  const filteredData = puntos.filter((item: any) => item.users_id === users_id && item.evento.id === eventos_id);
+
+
+                  if (filteredData.length === 0 && this.newEventCreate.users_id != this.usuario) {
+
+                    const formData = {
+                      eventos_id: eventos_id,
+                      users_id: users_id
+                    }
+
+
+
+                    this.miAgendaServices.destroyAgenda(formData)
+                      .subscribe({
+                        next: ({ message }) => {
+                          console.log(message);
+                        }
+                      })
+
+                  }
+
+                  this.indexPuntos(eventos_id);
+                  this.toastr.error(message, 'Agenda institucional-GADC');
+
+                }
+              })
           }
         },
         error: (err) => {
           Swal.fire('Error', err.error.message, 'error')
         }
       });
+  }
+
+  /**
+   * indexAgenda
+   */
+  public indexAgenda() {
+    this.miAgendaServices.indexAgenda()
+      .subscribe({
+        next: ({ agenda }) => {
+
+          // Carga de datos en shared-data agenda
+          this.sharedDataServices.setAgenda$(agenda);
+
+
+          // Filtrar por id y estado
+          const filteredData = agenda.filter((item: any) => item.users_id === this.usuario && item.evento.estado != 'Concluido');
+
+          this.dataAgenda = filteredData;
+          // console.log(this.dataAgenda);
+
+
+        },
+        error: (err) => {
+          Swal.fire('Error', err.error.message, 'error')
+        }
+      })
+  }
+
+  public validarFecha() {
+
+    const fechaEvento = new Date(this.formulario.value.fecha_hora_evento);
+    const fechaActual = new Date();
+    this.fechaInvalida = fechaEvento >= fechaActual;
+    // console.log(this.fechaInvalida);
+
   }
 
   // Compatir por whatsap
