@@ -1,8 +1,8 @@
 export interface ServidorInterface {
     id: number;
     nombres: string;
-    paterno: string;
-    materno: string;
+    cargo: string;
+    user: string;
     rol: string;
     estado: string;
     created_at: string;

@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 // Motras ntificaciones en tarjetas
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
+// import Toastify from 'toastify-js';
 
 // Para navegar de una pagina a otra
 import { Router } from '@angular/router';
@@ -29,7 +30,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private usuarioServices: UsuariosService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     this.crearFormulario();
   }
@@ -68,16 +69,27 @@ export class LoginComponent implements OnInit {
       .subscribe(resp => {
 
         this.cargando = false;
-        if ((resp.status === 'success') && (resp.identity.estado === 'habilitado')) {
+        if ((resp.status === 'success') && (resp.identity.estado === 'Habilitado')) {
           this.router.navigateByUrl('/inicio');
 
           // Carga del estado de usuario al localstorage
           localStorage.setItem('access', JSON.stringify(resp));
 
 
-          this.toastr.success(`${resp.identity.nombres} ${resp.identity.paterno}`, 'Bienvenid@', {
+          this.toastr.success(`${resp.identity.nombres}`, 'Bienvenid@', {
             positionClass: 'toast-top-right'
           });
+
+          // this.messageService.add({ severity: 'success', summary: 'Bienvenid@', detail: `${resp.identity.nombres} ${resp.identity.paterno}` });
+
+          // Toastify({
+          //   text: "This is a toast with offset",
+          //   offset: {
+          //     x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+          //     y: 10 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+          //   },
+          // }).showToast();
+
 
         } else {
           this.cargando = false;
