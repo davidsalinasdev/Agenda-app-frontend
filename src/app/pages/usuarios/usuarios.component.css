@@ -92,3 +92,11 @@ table {
 }
 
 /* FIN Sector crear titulo y btn crear usuario */
+
+.puntero {
+  cursor: pointer;
+}
+
+.table-header--modal {
+  background-color: rgb(32, 109, 197);
+}

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 
-import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormGroupDirective, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
 // Servicios
@@ -29,14 +29,14 @@ interface TipoUsuario {
 }
 
 interface EstadoServidor {
+  label: string;
   value: string;
-  estado: string;
 }
 
 // Prueba
 export interface RolUsuario {
+  label: string;
   value: string;
-  roles: string;
 }
 // FIN PRUEBA
 
@@ -68,13 +68,14 @@ export class UsuariosComponent implements OnInit {
   public btnSave: boolean = true;
 
   public estados: EstadoServidor[] = [
-    { value: 'habilitado', estado: 'Habilitado' },
-    { value: 'no habilitado', estado: 'No habilitado' }
+    { label: 'Habilitado', value: 'Habilitado' },
+    { label: 'No habilitado', value: 'No habilitado' }
   ];
 
   public roles: RolUsuario[] = [
-    { value: 'Administrador', roles: 'Administrador' },
-    { value: 'Funcionario', roles: 'Funcionario' }
+    { label: 'Administrador', value: 'Administrador' },
+    { label: 'Funcionario', value: 'Funcionario' },
+    { label: 'Invitado', value: 'Invitado' }
   ]
 
   public idServidor!: number;
@@ -90,6 +91,8 @@ export class UsuariosComponent implements OnInit {
 
 
   public dataServidores!: ServidorInterface[];
+
+  public idServidorModificar!: number;
 
   // Paginación
   public current_page: any;
@@ -145,25 +148,28 @@ export class UsuariosComponent implements OnInit {
   */
   public crearFormulario() {
     this.formulario = this.fb.group({
-      nombres: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(50)])],
-      paterno: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(50)])],
-      materno: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(50)])],
+      nombres: ['', Validators.compose([Validators.required, Validators.maxLength(70)])],
+      cargo: ['', Validators.compose([Validators.required, Validators.maxLength(70)])],
       user: ['', Validators.compose([Validators.required, Validators.maxLength(30)])],
-      password: ['', Validators.compose([Validators.required, Validators.maxLength(30)])],
+      password: ['', Validators.compose([Validators.required, this.validatePassword])],
       roluser: ['', Validators.compose([Validators.required])],
 
     });
   }
+
+  // Función personalizada para validar la contraseña
+  public validatePassword(control: AbstractControl): { [key: string]: boolean } | null {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+    const isValid = passwordRegex.test(control.value);
+    return isValid ? null : { invalidPassword: true };
+  }
+
   get nombres() {
     return this.formulario.get('nombres');
   }
 
-  get paterno() {
-    return this.formulario.get('paterno');
-  }
-
-  get materno() {
-    return this.formulario.get('materno');
+  get cargo() {
+    return this.formulario.get('cargo');
   }
 
   get user() {
@@ -184,9 +190,8 @@ export class UsuariosComponent implements OnInit {
   */
   public crearFormularioModificar() {
     this.formularioModificar = this.fb.group({
-      nombresM: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(50)])],
-      paternoM: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(50)])],
-      maternoM: ['', Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.maxLength(50)])],
+      nombresM: ['', Validators.compose([Validators.required, Validators.maxLength(70)])],
+      cargoM: ['', Validators.compose([Validators.required, Validators.maxLength(70)])],
       userM: ['', Validators.compose([Validators.required, Validators.maxLength(30)])],
       estadoM: ['', Validators.compose([Validators.required])],
       roluserM: ['', Validators.compose([Validators.required])],
@@ -194,27 +199,23 @@ export class UsuariosComponent implements OnInit {
   }
 
   get nombresM() {
-    return this.formulario.get('nombresM');
+    return this.formularioModificar.get('nombresM');
   }
 
-  get paternoM() {
-    return this.formulario.get('paternoM');
-  }
-
-  get maternoM() {
-    return this.formulario.get('maternoM');
+  get cargoM() {
+    return this.formularioModificar.get('paternoM');
   }
 
   get userM() {
-    return this.formulario.get('userM');
+    return this.formularioModificar.get('userM');
   }
 
   get estadoM() {
-    return this.formulario.get('estadoM');
+    return this.formularioModificar.get('estadoM');
   }
 
   get roluserM() {
-    return this.formulario.get('roluserM');
+    return this.formularioModificar.get('roluserM');
   }
 
   /**
@@ -357,6 +358,7 @@ export class UsuariosComponent implements OnInit {
           } = users;
 
           this.cargando = false;
+
           this.dataServidores = data;
 
           this.current_page = current_page;
@@ -393,10 +395,11 @@ export class UsuariosComponent implements OnInit {
     this.usuarioServices.showServidoresPublicos(id)
       .subscribe(({ users }) => {
 
+        this.idServidorModificar = users.id;
+
         this.formularioModificar.setValue({
           nombresM: users.nombres,
-          paternoM: users.paterno,
-          maternoM: users.materno,
+          cargoM: users.cargo,
           userM: users.user,
           estadoM: users.estado,
           roluserM: users.rol
@@ -417,8 +420,7 @@ export class UsuariosComponent implements OnInit {
 
     const formData = {
       nombres: this.formularioModificar.value.nombresM,
-      paterno: this.formularioModificar.value.paternoM,
-      materno: this.formularioModificar.value.maternoM,
+      cargo: this.formularioModificar.value.cargoM,
       user: this.formularioModificar.value.userM,
       estado: this.formularioModificar.value.estadoM,
       rol: this.formularioModificar.value.roluserM
@@ -466,37 +468,43 @@ export class UsuariosComponent implements OnInit {
   /**
   * destroyPersona
   */
-  public destroyServidorPublico(id: number, nombres: string, paterno: string, estado: string) {
+  public destroyServidorPublico(id: number, nombres: string, estado: string) {
 
-    if (estado === 'no habilitado') {
-      this.toastr.error('Este servidor ya ha sido deshabilitado', 'Control de relagias mineras')
+    if (id === this.usuario.sub) {
+      Swal.fire('Error', 'No puedes darte de baja asi mismo', 'error')
     } else {
-      Swal.fire({
-        title: 'Se deshabilitara a:',
-        text: `${nombres + ' ' + paterno}`,
-        icon: 'question',
-        showCancelButton: true,
-        cancelButtonText: 'Cancelar!',
-        confirmButtonText: 'Si, deshabilitar!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.usuarioServices.destroyServidorPublico(id)
-            .subscribe(({ status, message }) => {
-              if (status === 'success') {
-                this.indexServidores();
-                Swal.fire(
-                  `${nombres + ' ' + paterno}`,
-                  `A sido deshabilitado correctamente`,
-                  'success'
-                );
-              }
-            }, (err) => {
-              this.cargando = false;
-              Swal.fire('Error', err.error.message, 'error')
-            });
-        }
-      })
+      if (estado === 'No habilitado') {
+        this.toastr.error('Este servidor ya ha sido deshabilitado', 'Control de relagias mineras')
+      } else {
+        Swal.fire({
+          title: 'Se deshabilitara a:',
+          text: `${nombres}`,
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: 'Cancelar!',
+          confirmButtonText: 'Si, deshabilitar!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.usuarioServices.destroyServidorPublico(id)
+              .subscribe(({ status, message }) => {
+                if (status === 'success') {
+                  this.indexServidores();
+                  Swal.fire(
+                    `${nombres}`,
+                    `A sido deshabilitado correctamente`,
+                    'success'
+                  );
+                }
+              }, (err) => {
+                this.cargando = false;
+                Swal.fire('Error', err.error.message, 'error')
+              });
+          }
+        })
+      }
     }
+
+
   }
 
 

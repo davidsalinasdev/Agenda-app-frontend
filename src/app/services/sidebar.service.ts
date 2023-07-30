@@ -36,7 +36,8 @@ export class SidebarService {
     }
     // Si el rol del usuario es "usuarios", devolver solo el menú de "Usuarios".
     else if (rolUsuario === 'Administrador') {
-      return this.menu;
+      // return this.menu; Devuelve todo el menu
+      return this.menu.filter(item => item.titulo === 'Usuarios');
     }
     // Si el rol del usuario no coincide con ninguno de los menús, devolver un array vacío.
     else {
