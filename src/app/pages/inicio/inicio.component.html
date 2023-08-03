@@ -27,8 +27,7 @@
 
 
       <div class="agenda-individual__calendario">
-        <full-calendar [events]="this.events" [options]="calendarOptions"
-          [style]="{ 'width': '100%','display': 'block' }"></full-calendar>
+        <full-calendar [options]="calendarOptions" [style]="{ 'width': '100%','display': 'block' }"></full-calendar>
       </div>
 
     </div>
@@ -117,23 +116,37 @@
               </div>
 
               <!-- Estado abierto o cerrado -->
-              <div class="form-group">
+              <div class="form-group estado-evento">
 
-                <label for="estado">Estado:<span class="text-danger">*</span></label><br>
+                <div class="col-12 col-sm-6">
+                  <label for="estado">Estado:<span class="text-danger">*</span></label><br>
 
-                <div class="d-flex">
+                  <div class="d-flex">
 
-                  <div *ngFor="let estadoAgenda of this.estadoAgenda" class="d-flex ml-2">
-                    <p-radioButton [inputId]="estadoAgenda.key" [value]="estadoAgenda" formControlName="estado">
-                    </p-radioButton>
-                    <label [for]="estadoAgenda.key" class="ml-2 mb-0 text-black-50">{{ estadoAgenda.name }}</label>
+                    <div *ngFor="let estadoAgenda of this.estadoAgenda" class="d-flex ml-2">
+                      <p-radioButton [inputId]="estadoAgenda.key" [value]="estadoAgenda" formControlName="estado">
+                      </p-radioButton>
+                      <label [for]="estadoAgenda.key" class="ml-2 mb-0 text-black-50">{{ estadoAgenda.name }}</label>
+                    </div>
+
                   </div>
-
                 </div>
 
+                <div class="col-12 col-sm-6">
+                  <label for="estado">Alcance:<span class="text-danger">*</span></label><br>
+
+                  <div class="d-flex">
+
+                    <div *ngFor="let estadoalcance of this.estadoAlcance" class="d-flex ml-2">
+                      <p-radioButton [inputId]="estadoalcance.key" [value]="estadoalcance" formControlName="alcance">
+                      </p-radioButton>
+                      <label [for]="estadoalcance.key" class="ml-2 mb-0 text-black-50">{{ estadoalcance.name }}</label>
+                    </div>
+
+                  </div>
+                </div>
 
               </div>
-
 
               <!-- Etiqueta -->
               <div class="form-group">
@@ -181,8 +194,7 @@
 
         <!-- Calendario -->
         <div class="datos-calent--calendario calendario col-12  col-xl-6 p-4 animated fadeIn fast">
-          <full-calendar [style]="{ 'width': '100%','display': 'block' }" [events]="this.events"
-            [options]="calendarOptions"></full-calendar>
+          <full-calendar [style]="{ 'width': '100%','display': 'block' }" [options]="calendarOptions"></full-calendar>
         </div>
       </div>
 
@@ -217,6 +229,7 @@
                         <th>lugar</th>
                         <th>Fecha y hora</th>
                         <th>Estado</th>
+                        <th>Alcance</th>
                         <th>Etiqueta</th>
 
                         <ng-container *ngIf="this.estadoConcluido">
@@ -233,6 +246,8 @@
                         <td>{{ this.fechaEventoGlobal }} | {{ this.horaEventoGlobal }} </td>
 
                         <td [ngClass]="this.colorEstadoEvento">{{ this.newEventCreate.estado }}</td>
+
+                        <td>{{ this.newEventCreate.alcance }}</td>
 
                         <td>
                           <span class="etiqueta" [ngStyle]="{'background-color': this.newEventCreate.etiqueta, 'color':
@@ -440,8 +455,7 @@
           </div>
           <!-- Calendario -->
           <div class="datos-calent--calendario calendario col-12  col-xl-6 p-4 animated fadeIn fast">
-            <full-calendar [style]="{ 'width': '100%','display': 'block' }" [events]="this.events"
-              [options]="calendarOptions"></full-calendar>
+            <full-calendar [style]="{ 'width': '100%','display': 'block' }" [options]="calendarOptions"></full-calendar>
           </div>
 
         </div>
@@ -568,6 +582,19 @@
 
           </div>
           <!-- FIN Estado -->
+
+          <!-- Estado  Alcance-->
+          <!-- <div class="form-group">
+            <label for="alcanceM">Seleccione un alcance:<span class="text-danger">*</span></label>
+            <p-dropdown [style]="{ 'width': '100%' }" [options]="this.alcanceEvento" formControlName="alcanceM">
+            </p-dropdown>
+            <span *ngIf="this.alcanceM?.invalid && (this.alcanceM?.dirty || this.alcanceM?.touched)" class="texto-tam">
+              <div *ngIf="this.alcanceM?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                Este campo es requerido.
+              </div>
+            </span>
+          </div> -->
+          <!-- FIN Estado Alcance-->
 
 
           <p class="text-right mt-3">Los campos con ( <span class="text-danger">*</span> ) son obligatorios</p>

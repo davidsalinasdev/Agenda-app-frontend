@@ -152,3 +152,15 @@ table th {
 .agenda-individual__texto {
   font-size: 1.5rem;
 }
+
+.estado-evento {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 1600px) {
+  .estado-evento {
+    flex-direction: row;
+  }
+}

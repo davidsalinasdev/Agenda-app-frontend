@@ -43,6 +43,11 @@ interface EstadoAgenda {
   key: string;
 }
 
+interface EstadoAlcance {
+  name: string;
+  key: string;
+}
+
 // Utilizando jquery
 declare var JQuery: any;
 declare var $: any;
@@ -58,7 +63,7 @@ export class InicioComponent implements OnInit {
   public enlaceCompartirSeguro!: SafeUrl;
 
 
-  public events!: any[]
+  // public events!: any[]
 
   // btn para crear evento
   public btnNewEvent: boolean = true;
@@ -78,6 +83,10 @@ export class InicioComponent implements OnInit {
     { label: 'Concluido', value: 'Concluido' }
   ];
 
+  public alcanceEvento: EstadoEvento[] = [
+    { label: 'Privado', value: 'Privado' },
+    { label: 'Publico', value: 'Publico' },
+  ];
 
 
   public calendarOptions: CalendarOptions = {
@@ -145,6 +154,12 @@ export class InicioComponent implements OnInit {
     { name: 'Cerrado', key: 'Cerrado' }
   ];
 
+  public estadoAlcance: EstadoAlcance[] = [
+    { name: 'Privado', key: 'Privado' },
+    { name: 'Publico', key: 'Publico' }
+  ];
+
+
   constructor(
     private fb: FormBuilder,
     private eventosServices: EventoService,
@@ -189,6 +204,7 @@ export class InicioComponent implements OnInit {
       lugar_evento: ['', Validators.compose([Validators.required, Validators.maxLength(70)])],
       fecha_hora_evento: ['', Validators.compose([Validators.required])],
       estado: ['', Validators.compose([Validators.required])],
+      alcance: ['', Validators.compose([Validators.required])],
       etiqueta: ['', Validators.compose([Validators.required])]
     });
 
@@ -221,6 +237,11 @@ export class InicioComponent implements OnInit {
     return this.formulario.get('etiqueta');
   }
 
+  get alcance() {
+    return this.formulario.get('alcance');
+  }
+
+
   // Para crear Puntos del evento
   get puntos() {
     return this.formularioPuntos.get('puntos') as FormArray;
@@ -240,6 +261,7 @@ export class InicioComponent implements OnInit {
       fecha_hora_eventoM: ['', Validators.compose([Validators.required])],
       etiquetaM: ['', Validators.compose([Validators.required])],
       estadoM: ['', Validators.compose([Validators.required])],
+      alcanceM: ['', Validators.compose([Validators.required])],
     });
 
     // Formulario par crear un evento
@@ -253,30 +275,40 @@ export class InicioComponent implements OnInit {
 
   // Para crear eventos MODIFICAR
   get eventoM() {
-    return this.formulario.get('eventoM');
+    return this.formularioModificarEvento.get('eventoM');
   }
 
   get lugar_eventoM() {
-    return this.formulario.get('lugar_eventoM');
+    return this.formularioModificarEvento.get('lugar_eventoM');
   }
 
   get fecha_hora_eventoM() {
-    return this.formulario.get('fecha_hora_eventoM');
+    return this.formularioModificarEvento.get('fecha_hora_eventoM');
   }
 
   get etiquetaM() {
-    return this.formulario.get('etiquetaM');
+    return this.formularioModificarEvento.get('etiquetaM');
   }
+
+  // Para crear Puntos del evento
+  get estadoM() {
+    return this.formularioModificarEvento.get('estadoM') as FormArray;
+  }
+
+  // Para crear Puntos del evento
+  get alcanceM() {
+    return this.formularioModificarEvento.get('alcanceM') as FormArray;
+  }
+
 
   // Para crear Puntos del evento
   get puntosM() {
     return this.formularioPuntos.get('puntosM') as FormArray;
   }
 
-  // Para crear Puntos del evento
-  get estadoM() {
-    return this.formularioPuntos.get('estadoM') as FormArray;
-  }
+
+
+
 
 
   /**
@@ -294,14 +326,12 @@ export class InicioComponent implements OnInit {
         lugar_evento: this.formulario.value.lugar_evento,
         fecha_hora_evento: this.formulario.value.fecha_hora_evento,
         estado: this.formulario.value.estado.name,
+        alcance: this.formulario.value.alcance.name,
         etiqueta: this.formulario.value.etiqueta,
         users_id: this.usuario,
       }
 
       this.btnSave = false;
-
-      console.log(formData);
-
 
       this.eventosServices.storeEventos(formData)
         .subscribe({
@@ -450,18 +480,36 @@ export class InicioComponent implements OnInit {
       .subscribe({
         next: ({ evento }) => {
 
+          console.log(evento);
+
+
           // Angular-calendar
           this.calendarOptions = {
             initialView: 'dayGridMonth',
             plugins: [dayGridPlugin],
-            events: evento.map((evento: any) => (
-              {
-                title: evento.evento,
-                date: evento.fecha_hora_evento.slice(0, 10),
-                color: evento.etiqueta,
-                publicId: evento.id
+            events: evento.map((evento: any) => {
+
+              if (evento.alcance === 'Privado' && evento.users_id === this.usuario) {
+                return {
+                  title: evento.evento,
+                  date: evento.fecha_hora_evento.slice(0, 10),
+                  color: evento.etiqueta,
+                  publicId: evento.id
+                };
+              } else if (evento.alcance === 'Publico') {
+                return {
+                  title: evento.evento,
+                  date: evento.fecha_hora_evento.slice(0, 10),
+                  color: evento.etiqueta,
+                  publicId: evento.id
+                };
+              } else {
+                return null;
               }
-            )),
+
+            })
+              .filter((evento: any) => evento !== null), // Eliminamos los elementos null generados por eventos no importantes
+
             editable: true,
 
             customButtons: {
@@ -737,6 +785,7 @@ export class InicioComponent implements OnInit {
       lugar_evento: this.formularioModificarEvento.value.lugar_eventoM,
       fecha_hora_evento: this.formularioModificarEvento.value.fecha_hora_eventoM,
       etiqueta: this.formularioModificarEvento.value.etiquetaM,
+      alcance: this.formularioModificarEvento.value.alcanceM,
       estado: this.formularioModificarEvento.value.estadoM
     }
 
@@ -830,7 +879,8 @@ export class InicioComponent implements OnInit {
             fecha_hora_eventoM: this.dataShowEvento.fecha_hora_evento,
             lugar_eventoM: this.dataShowEvento.lugar_evento,
             etiquetaM: this.dataShowEvento.etiqueta,
-            estadoM: this.dataShowEvento.estado
+            estadoM: this.dataShowEvento.estado,
+            alcanceM: this.dataShowEvento.alcance
           });
 
         },

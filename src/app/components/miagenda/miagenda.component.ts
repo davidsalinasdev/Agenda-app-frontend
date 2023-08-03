@@ -35,9 +35,6 @@ export class MiagendaComponent implements OnInit, OnDestroy {
         next: (resp) => {
           this.dataAgenda = resp;
 
-          console.log(this.dataAgenda);
-
-
           // POR CADA ITERACION DEL ARRAY
           // 1.-value:any=>Muestra un elemento del array 
           // 2.-index:any=>Muetsra los indeces del array

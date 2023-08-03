@@ -5,6 +5,7 @@ export interface Evento {
     fecha_hora_evento: string;
     etiqueta: string;
     estado: string;
+    alcance: string;
     users_id?: number;
     created_at?: string;
     updated_at?: string;
