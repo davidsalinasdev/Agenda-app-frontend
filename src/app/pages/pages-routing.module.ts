@@ -7,6 +7,7 @@ import { AuthGuard } from './../guards/auth.guard';
 // Componentes de PAGES
 import { PagesComponent } from './pages.component';
 
+
 const routes: Routes = [
 
   // Rutas PROTEGIDAS como hijas de app-routing.module.ts
@@ -15,7 +16,7 @@ const routes: Routes = [
     path: 'inicio', // ruta padre
     component: PagesComponent,
     canActivate: [AuthGuard],
-    canLoad: [AuthGuard],
+
     // Definiendo rutas hijas de este modulo
     // children: [ // ruta hija depende del padre
 

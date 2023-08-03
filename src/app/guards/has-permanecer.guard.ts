@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 
 // Servicios
 import { UsuariosService } from '../services/usuarios.service';
@@ -9,12 +9,15 @@ import { UsuariosService } from '../services/usuarios.service';
 @Injectable({
     providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class HasPermanecerGuard implements CanActivate {
 
     constructor(
         private usuarioServices: UsuariosService,
         private router: Router
     ) { }
+
+
+
 
 
 
@@ -25,12 +28,11 @@ export class AuthGuard implements CanActivate {
         return this.usuarioServices.validarToken()
             .pipe(
                 tap(estaAutenticado => {
-                    if (!estaAutenticado) {
-                        // console.log('Hola2');
-
-                        this.router.navigateByUrl('/login');
+                    if (estaAutenticado) {
+                        this.router.navigateByUrl('/');
                     }
-                })
+                }),
+                map(isAutenticado => !isAutenticado)
             );
     }
 

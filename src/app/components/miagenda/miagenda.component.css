@@ -31,3 +31,8 @@
 .table-header__encabezado--color th {
   color: rgba(252, 250, 250, 0.87);
 }
+
+.etiqueta {
+  padding: 2px 13px;
+  border-radius: 5px;
+}

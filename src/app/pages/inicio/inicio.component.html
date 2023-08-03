@@ -53,8 +53,8 @@
               <div class="form-group">
                 <label for="evento">Motivo de agenda:<span class="text-danger">*</span></label>
                 <div class="full-width">
-                  <input type="text" pInputText formControlName="evento" placeholder="Ingrese el motivo de la agenda"
-                    [style]="{ 'width': '100%','display': 'block' }" />
+                  <input type="text" class="p-inputtext-sm" pInputText formControlName="evento"
+                    placeholder="Ingrese el motivo de la agenda" [style]="{ 'width': '100%','display': 'block' }" />
                 </div>
                 <!-- Validacion -->
                 <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
@@ -74,8 +74,8 @@
               <div class="form-group">
                 <label for="lugar_evento">Lugar:<span class="text-danger">*</span></label>
                 <div class="full-width">
-                  <input type="text" pInputText formControlName="lugar_evento" placeholder="Ingrese el lugar"
-                    [style]="{ 'width': '100%','display': 'block' }" />
+                  <input type="text" class="p-inputtext-sm" pInputText formControlName="lugar_evento"
+                    placeholder="Ingrese el lugar" [style]="{ 'width': '100%','display': 'block' }" />
                 </div>
                 <!-- Validacion -->
                 <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
@@ -96,9 +96,9 @@
               <div class="form-group">
                 <label for="fecha_hora_evento">Fecha y hora:<span class="text-danger">*</span></label>
 
-                <input type="datetime-local" pInputText style="width: 100%;" formControlName="fecha_hora_evento"
-                  placeholder="Ingrese fecha y hora de la agenda" (blur)="this.validarFecha()"
-                  (keyup)="this.validarFecha()">
+                <input type="datetime-local" class="p-inputtext-sm" pInputText style="width: 100%;"
+                  formControlName="fecha_hora_evento" placeholder="Ingrese fecha y hora de la agenda"
+                  (blur)="this.validarFecha()" (keyup)="this.validarFecha()">
 
                 <!-- Validacion -->
                 <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
@@ -114,6 +114,24 @@
                 <div *ngIf="this.fechaInvalida===false" class="animated fadeIn fast text-danger" id="">
                   ¡Error! La fecha y hora es anterior a la actual.
                 </div>
+              </div>
+
+              <!-- Estado abierto o cerrado -->
+              <div class="form-group">
+
+                <label for="estado">Estado:<span class="text-danger">*</span></label><br>
+
+                <div class="d-flex">
+
+                  <div *ngFor="let estadoAgenda of this.estadoAgenda" class="d-flex ml-2">
+                    <p-radioButton [inputId]="estadoAgenda.key" [value]="estadoAgenda" formControlName="estado">
+                    </p-radioButton>
+                    <label [for]="estadoAgenda.key" class="ml-2 mb-0 text-black-50">{{ estadoAgenda.name }}</label>
+                  </div>
+
+                </div>
+
+
               </div>
 
 
@@ -150,9 +168,8 @@
                 </div>
 
                 <ng-template #notBtnSave>
-                  <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.notBtnSave">
-                    <p-progressSpinner></p-progressSpinner>
-                    <span class="ms-2">Guardando</span>
+                  <button type="submit" class="ms-2 btn btn-info waves-effect" [disabled]="this.notBtnSave">
+                    Espere por favor
                   </button>
                 </ng-template>
               </div>
@@ -393,10 +410,8 @@
                           </div>
 
                           <ng-template #notBtnSave>
-                            <button type="submit" class="ms-2 btn btn-primary waves-effect"
-                              [disabled]="this.notBtnSave">
-                              <p-progressSpinner></p-progressSpinner>
-                              <span class="ms-2">Guardando</span>
+                            <button type="submit" class="ms-2 btn btn-info waves-effect" [disabled]="this.notBtnSave">
+                              Espere por favor
                             </button>
                           </ng-template>
                         </div>
@@ -572,9 +587,8 @@
             </div>
 
             <ng-template #notBtnSave>
-              <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.notBtnSave">
-                <p-progressSpinner></p-progressSpinner>
-                <span class="ms-2">Guardando</span>
+              <button type="submit" class="ms-2 btn btn-info waves-effect" [disabled]="this.notBtnSave">
+                Espere por favor
               </button>
             </ng-template>
           </div>
@@ -642,9 +656,8 @@
             </div>
 
             <ng-template #notBtnSave>
-              <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.notBtnSave">
-                <p-progressSpinner></p-progressSpinner>
-                <span class="ms-2">Guardando</span>
+              <button type="submit" class="ms-2 btn btn-info waves-effect" [disabled]="this.notBtnSave">
+                Espere por favor
               </button>
             </ng-template>
           </div>

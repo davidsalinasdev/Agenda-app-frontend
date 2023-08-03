@@ -15,10 +15,10 @@
                 class="fa fa-user-plus"></i> Crear usuario</button>
           </div>
         </div>
-
+        <hr>
         <!-- Buscar -->
-        <div class="form-group d-flex flex-column gap-1">
-          <label for="buscar">Buscar:</label>
+        <div class="form-group mt-5 d-flex flex-column gap-1">
+          <!-- <label for="buscar">Buscar:</label> -->
           <input type="email" pInputText class="example-full-width p-inputtext-sm" id="buscar"
             placeholder="Ingrese su busqueda" [(ngModel)]="this.searchTerm" #texto
             (keyup)="searchTerm$.next(texto.value)">

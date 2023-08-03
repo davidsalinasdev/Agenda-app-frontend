@@ -4,9 +4,19 @@ import { RouterModule, Routes } from '@angular/router';
 // Componente de AUTH
 import { LoginComponent } from './login/login.component';
 
+// Guardian
+import { HasPermanecerGuard } from '../guards/has-permanecer.guard';
+
+
+
 const routes: Routes = [
   /****  Rutas PUBLICAS Principales como hijas de app-routing.module.ts****/
-  { path: 'login', component: LoginComponent, data: { titulo: 'Login' } },
+  {
+    path: 'login',
+    component: LoginComponent,
+    data: { titulo: 'Login' },
+    canActivate: [HasPermanecerGuard]
+  },
 ];
 
 @NgModule({

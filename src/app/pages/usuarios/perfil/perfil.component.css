@@ -1,0 +1,23 @@
+.datos-usuario {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1400px) {
+  .datos-usuario {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* Imagen de fondo */
+.hero-img {
+  background-image: url('../../../../assets/dist/img/fondo_user3.png');
+  background-size: cover;
+  /* Opcional: ajusta el tamaño de la imagen al contenedor */
+  /* Otros estilos adicionales */
+}
+
+.table-header--modal {
+  background-color: rgb(32, 109, 197);
+}

@@ -10,6 +10,7 @@ import { filter, map } from 'rxjs/operators';
 export class BreadcrumbsComponent {
 
   public titulo: string = '';
+  public usuario: any;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
     this.router.events
@@ -25,6 +26,13 @@ export class BreadcrumbsComponent {
   }
 
   ngOnInit(): void {
+
+    const user = localStorage.getItem('access');
+    if (user) {
+      const { token, identity } = JSON.parse(user);
+      this.usuario = identity
+
+    }
   }
 
 }

@@ -139,5 +139,25 @@ export class UsuariosService {
     return this.http.get<any>(base_url + '/api/user', options);
   }
 
+  // para cambiar la contraseña
+  /**
+  * Servicio para cambio de password
+  */
+  public loginChangesPassword(formData: any) {
+
+    return this.http.post<any>(`${base_url}/api/login`, formData);
+
+  }
+
+  /**
+   * Actualizacion de password
+   */
+  public updateChangesPassword(password: any) {
+
+    return this.http.post<any>(base_url + '/api/user/changespassword', password);
+
+  }
+
+
 }
 

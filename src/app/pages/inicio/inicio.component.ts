@@ -38,6 +38,10 @@ interface EstadoEvento {
   value: string;
 }
 
+interface EstadoAgenda {
+  name: string;
+  key: string;
+}
 
 // Utilizando jquery
 declare var JQuery: any;
@@ -136,6 +140,11 @@ export class InicioComponent implements OnInit {
 
   public fechaModificar!: string;
 
+  public estadoAgenda: EstadoAgenda[] = [
+    { name: 'Abierto', key: 'Abierto' },
+    { name: 'Cerrado', key: 'Cerrado' }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private eventosServices: EventoService,
@@ -144,13 +153,16 @@ export class InicioComponent implements OnInit {
     private renderer: Renderer2,
     private sanitizer: DomSanitizer,
     private sharedDataServices: SharedDataService,
-    private miAgendaServices: MiagendaService
+    private miAgendaServices: MiagendaService,
   ) {
+
     this.enlaceCompartirSeguro = this.sanitizer.bypassSecurityTrustUrl(this.enlaceCompartir);
 
   }
 
   ngOnInit(): void {
+
+
 
     this.scrollToTop();
     this.crearFormulario();
@@ -161,6 +173,7 @@ export class InicioComponent implements OnInit {
     if (user) {
       const { token, identity } = JSON.parse(user);
       this.usuario = identity.sub;
+
     }
 
   }
@@ -175,6 +188,7 @@ export class InicioComponent implements OnInit {
       evento: ['', Validators.compose([Validators.required, Validators.maxLength(30)])],
       lugar_evento: ['', Validators.compose([Validators.required, Validators.maxLength(70)])],
       fecha_hora_evento: ['', Validators.compose([Validators.required])],
+      estado: ['', Validators.compose([Validators.required])],
       etiqueta: ['', Validators.compose([Validators.required])]
     });
 
@@ -197,6 +211,11 @@ export class InicioComponent implements OnInit {
   get fecha_hora_evento() {
     return this.formulario.get('fecha_hora_evento');
   }
+
+  get estado() {
+    return this.formulario.get('estado');
+  }
+
 
   get etiqueta() {
     return this.formulario.get('etiqueta');
@@ -274,11 +293,15 @@ export class InicioComponent implements OnInit {
         evento: this.formulario.value.evento,
         lugar_evento: this.formulario.value.lugar_evento,
         fecha_hora_evento: this.formulario.value.fecha_hora_evento,
+        estado: this.formulario.value.estado.name,
         etiqueta: this.formulario.value.etiqueta,
         users_id: this.usuario,
       }
 
       this.btnSave = false;
+
+      console.log(formData);
+
 
       this.eventosServices.storeEventos(formData)
         .subscribe({

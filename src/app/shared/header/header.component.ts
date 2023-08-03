@@ -37,11 +37,11 @@ export class HeaderComponent implements OnInit {
     this.token = null;
     // Redireccionar al la pagina principal
     this.router.navigate(['/login']);
-    localStorage.removeItem('access');
-    localStorage.removeItem('ultimoClic');
-    localStorage.removeItem('items');
-    localStorage.removeItem('position');
-
+    // localStorage.removeItem('access');
+    // localStorage.removeItem('ultimoClic');
+    // localStorage.removeItem('items');
+    // localStorage.removeItem('position');
+    localStorage.clear();
   }
 
 }

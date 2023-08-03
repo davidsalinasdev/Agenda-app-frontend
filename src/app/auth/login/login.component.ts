@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private usuarioServices: UsuariosService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) {
     this.crearFormulario();
   }
@@ -68,27 +68,38 @@ export class LoginComponent implements OnInit {
     this.usuarioServices.login(this.formulario.value)
       .subscribe(resp => {
 
+        // console.log(resp);
+
+
         this.cargando = false;
         if ((resp.status === 'success') && (resp.identity.estado === 'Habilitado')) {
-          this.router.navigateByUrl('/inicio');
 
-          // Carga del estado de usuario al localstorage
-          localStorage.setItem('access', JSON.stringify(resp));
+          // Entra directo a usuarios
+          if (resp.identity.rol === 'Administrador') {
+
+            this.router.navigateByUrl('/inicio/usuarios');
+
+            // Carga del estado de usuario al localstorage
+            localStorage.setItem('access', JSON.stringify(resp));
 
 
-          this.toastr.success(`${resp.identity.nombres}`, 'Bienvenid@', {
-            positionClass: 'toast-top-right'
-          });
+            this.toastr.success(`${resp.identity.nombres}`, 'Bienvenid@', {
+              positionClass: 'toast-top-right'
+            });
 
-          // this.messageService.add({ severity: 'success', summary: 'Bienvenid@', detail: `${resp.identity.nombres} ${resp.identity.paterno}` });
+          } else {
 
-          // Toastify({
-          //   text: "This is a toast with offset",
-          //   offset: {
-          //     x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
-          //     y: 10 // vertical axis - can be a number or a string indicating unity. eg: '2em'
-          //   },
-          // }).showToast();
+            // Entra directo a inicio
+            this.router.navigateByUrl('/inicio');
+
+            // Carga del estado de usuario al localstorage
+            localStorage.setItem('access', JSON.stringify(resp));
+
+
+            this.toastr.success(`${resp.identity.nombres}`, 'Bienvenid@', {
+              positionClass: 'toast-top-right'
+            });
+          }
 
 
         } else {

@@ -8,6 +8,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
 import { InicioComponent } from './inicio/inicio.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
+import { PerfilComponent } from './usuarios/perfil/perfil.component';
 
 
 // Modulo shared
@@ -35,6 +36,7 @@ import { ComponentsModule } from '../components/components.module';
     PagesComponent,
     InicioComponent,
     UsuariosComponent,
+    PerfilComponent,
   ],
   imports: [
     CommonModule,
@@ -50,7 +52,8 @@ import { ComponentsModule } from '../components/components.module';
   exports: [
     PagesComponent,
     InicioComponent,
-    UsuariosComponent
+    UsuariosComponent,
+    PerfilComponent
   ]
 })
 export class PagesModule { }

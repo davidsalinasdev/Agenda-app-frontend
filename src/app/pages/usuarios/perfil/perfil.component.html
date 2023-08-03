@@ -1,0 +1,125 @@
+<div class="row animated fadeIn fast">
+  <div class="col-12">
+    <div class="card p-3">
+      <div class="card-body">
+        <div class="datos-usuario">
+
+          <div class="datos-usuario__titulos">
+            <h4>Información de usuario</h4>
+            <p>Agenda institucional - GADC</p>
+          </div>
+
+          <!-- btn-crear-nuevos-usuarios -->
+          <div class="datos-usuario__back mb-2 mb-lg-0">
+            <a [routerLink]="[ '/inicio/usuarios']" class="btn btn-primary text-uppercase"><i
+                class="fa fa-arrow-left"></i>
+              Regresar</a>
+          </div>
+
+        </div>
+        <hr>
+        <div class="d-flex justify-content-center">
+          <p-card [header]="this.usuario.nombres" subheader="Usuario: {{ this.usuario.usuario }}"
+            [style]="{ width: '360px' }">
+            <ng-template pTemplate="header">
+              <img alt="Card" src="../../../../assets/dist/img/sample_user.png" />
+            </ng-template>
+            <p class="mb-0">Cargo: <span>{{ this.usuario.cargo }}</span></p>
+            <p>Rol: <span>{{ this.usuario.rol }}</span></p>
+            <hr>
+            <p class="text-center">Estado</p>
+            <h4 *ngIf="this.usuario.estado === 'Habilitado'" class="text-center text-success text-uppercase">
+              {{ this.usuario.estado }}
+            </h4>
+            <hr>
+
+            <a data-toggle="modal" data-target="#myModal_changes_pass"
+              class="btn btn-primary btn-block text-uppercase">Cambiar contraseña</a>
+
+
+          </p-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal cambiar contraseña -->
+<div id="myModal_changes_pass" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  style="display: none;" aria-hidden="true" #myModaledit>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header table-header--modal">
+        <h5 class="modal-title text-white text-uppercase " id="myModalLabel">Registro de nueva contraseña</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      </div>
+      <form #formDirective="ngForm" [formGroup]="this.formulario" class="" (ngSubmit)="submit()">
+        <div class="modal-body">
+
+
+          <!-- Contraseña actual -->
+          <div class="form-group d-flex flex-column gap-1">
+            <label for="password">Contraseña actual:<span class="text-danger">*</span></label>
+            <input type="text" pInputText class="p-inputtext-sm" id="password"
+              placeholder="Ingrese su contraseña actual" formControlName="actualPassword">
+            <!-- Validacion -->
+            <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+            <span *ngIf="this.actualPassword?.invalid && (this.actualPassword?.dirty || this.actualPassword?.touched)">
+              <!-- Errores con expresiones regulares -->
+              <div *ngIf="this.actualPassword?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                Este campo es requerido.
+              </div>
+            </span>
+          </div>
+
+          <!-- New Contraseña  -->
+          <div class="form-group d-flex flex-column gap-1">
+            <label for="passwordNew">Contraseña actual:<span class="text-danger">*</span></label>
+            <input type="text" pInputText class="p-inputtext-sm" id="passwordNew"
+              placeholder="Ingrese una nueva contraseña" formControlName="nuevoPassword">
+            <!-- Validacion -->
+            <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
+            <span *ngIf="this.nuevoPassword?.invalid && (this.nuevoPassword?.dirty || this.nuevoPassword?.touched)">
+              <!-- Errores con expresiones regulares -->
+              <div *ngIf="this.nuevoPassword?.hasError('required')" class="animated fadeIn fast text-danger" id="">
+                Este campo es requerido.
+              </div>
+              <!-- Nuestra validación personalizada -->
+              <div *ngIf="this.nuevoPassword?.hasError('invalidPassword')" class="animated fadeIn fast text-danger"
+                id="">
+                La contraseña debe contener al menos una letra mayúscula, una minúscula y un número, y tener una
+                longitud mínima de 6 caracteres.
+              </div>
+            </span>
+          </div>
+
+          <p class="text-right  mb-0">Los campos con ( <span class="text-danger">*</span> ) son obligatorios</p>
+
+        </div>
+
+        <!-- Footer guardar botones -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Cancelar</button>
+
+          <div *ngIf="this.btnSave; else notBtnSave" class="">
+            <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.formulario.invalid">
+              Guardar
+            </button>
+          </div>
+
+          <ng-template #notBtnSave>
+            <button type="submit" class="ms-2 btn btn-primary waves-effect" [disabled]="this.notBtnSave">
+              <span class="ms-2">Espere por favor</span>
+            </button>
+          </ng-template>
+
+        </div>
+
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- FIN Modal cambiar contraseña -->

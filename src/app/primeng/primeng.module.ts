@@ -5,6 +5,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DropdownModule } from 'primeng/dropdown';
+import { CardModule } from 'primeng/card';
+import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @NgModule({
     exports: [
@@ -12,7 +15,10 @@ import { DropdownModule } from 'primeng/dropdown';
         InputTextModule,
         ColorPickerModule,
         ProgressSpinnerModule,
-        DropdownModule
+        DropdownModule,
+        CardModule,
+        CheckboxModule,
+        RadioButtonModule
     ]
 })
 export class PrimengModule { }
