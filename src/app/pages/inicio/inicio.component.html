@@ -308,7 +308,9 @@
                             <tbody>
                               <!-- Primer Punto -->
                               <tr class="table-cuerpo__datos">
+
                                 <td [width]="10">1.</td>
+
                                 <td>{{ this.newEventCreate.evento }}</td>
 
                                 <!-- Responsable -->
@@ -328,7 +330,7 @@
                                 <tr *ngFor="let item of this.puntosCreados; let i = index" class="table-cuerpo__datos">
                                   <td [width]="10">{{ i + 2 }}.</td>
                                   <td>{{ item.puntos }}</td>
-                                  <td>{{ item.user.nombres }} {{ item.user.paterno }}</td>
+                                  <td>{{ item.user.nombres }}</td>
 
 
                                   <ng-container *ngIf="this.estadoConcluido">
@@ -354,7 +356,7 @@
                                 <tr *ngFor="let item of this.puntosCreados; let i = index" class="table-cuerpo__datos">
                                   <td [width]="10">{{ i + 2 }}.</td>
                                   <td>{{ item.puntos }}</td>
-                                  <td>{{ item.user.nombres }} {{ item.user.paterno }}</td>
+                                  <td>{{ item.user.nombres }}</td>
 
                                   <ng-container *ngIf="this.estadoConcluido">
 

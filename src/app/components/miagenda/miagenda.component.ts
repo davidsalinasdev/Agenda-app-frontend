@@ -42,8 +42,6 @@ export class MiagendaComponent implements OnInit, OnDestroy {
 
           this.dataAgenda.map((value: any, index: any, array: any) => {
 
-
-
             // Fecha
             const dateString = value.evento.fecha_hora_evento;
             let fechaEventoGlobal = dateString.substring(0, 10);

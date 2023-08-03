@@ -11,6 +11,7 @@
           <th scope="col">Lugar</th>
           <th scope="col">Fecha y hora</th>
           <th scope="col">Estado</th>
+          <th scope="col">Alcance</th>
           <th scope="col">Etiqueta</th>
         </tr>
       </thead>
@@ -39,6 +40,7 @@
                 Abierto
               </span>
             </td>
+            <td>{{ item.evento.alcance }}</td>
             <td><span class="etiqueta" [style.background-color]="item.evento.etiqueta"
                 [style.color]="item.evento.etiqueta">----</span></td>
 

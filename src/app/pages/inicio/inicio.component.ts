@@ -371,7 +371,7 @@ export class InicioComponent implements OnInit {
 
               const { nombres, paterno } = this.newEventCreate.user;
 
-              this.nombreUserPunto = `${nombres} ${paterno}`;
+              this.nombreUserPunto = `${nombres}`;
 
               this.idEventoGlobal = evento.id;
 
@@ -480,9 +480,6 @@ export class InicioComponent implements OnInit {
       .subscribe({
         next: ({ evento }) => {
 
-          console.log(evento);
-
-
           // Angular-calendar
           this.calendarOptions = {
             initialView: 'dayGridMonth',
@@ -579,6 +576,9 @@ export class InicioComponent implements OnInit {
       .subscribe({
         next: ({ evento }) => {
 
+          // console.log(evento);
+
+
           this.scrollToTop();
 
           this.indexAgenda();
@@ -614,8 +614,11 @@ export class InicioComponent implements OnInit {
           }
 
 
+          // console.log('Usuario', this.usuario);
 
           const { nombres, paterno, id } = evento.user;
+          // console.log('eventoID', id);
+
 
           if (this.newEventCreate.estado === 'Cerrado' && this.usuario === id) {
 
@@ -632,11 +635,14 @@ export class InicioComponent implements OnInit {
             this.bandAgregarPunto = true;
             // console.log('3');
 
+          } else if (this.newEventCreate.estado === 'Abierto' && this.usuario != id) {
+            this.bandAgregarPunto = true;
+            // console.log('4');
           }
 
 
 
-          this.nombreUserPunto = `${nombres} ${paterno}`;
+          this.nombreUserPunto = `${nombres}`;
 
           // console.log(this.newEventCreate);
 
