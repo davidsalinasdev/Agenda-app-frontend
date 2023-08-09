@@ -116,35 +116,35 @@
               </div>
 
               <!-- Estado abierto o cerrado -->
+              <!-- Angular Material -->
               <div class="form-group estado-evento">
 
-                <div class="col-12 col-sm-6">
-                  <label for="estado">Estado:<span class="text-danger">*</span></label><br>
-
-                  <div class="d-flex">
-
-                    <div *ngFor="let estadoAgenda of this.estadoAgenda" class="d-flex ml-2">
-                      <p-radioButton [inputId]="estadoAgenda.key" [value]="estadoAgenda" formControlName="estado">
-                      </p-radioButton>
-                      <label [for]="estadoAgenda.key" class="ml-2 mb-0 text-black-50">{{ estadoAgenda.name }}</label>
-                    </div>
-
-                  </div>
+                <div class="">
+                  <label id="example-radio-group-label">Alcance:<span class="text-danger">*</span></label><br>
+                  <mat-radio-group formControlName="alcance">
+                    <mat-radio-button (change)="this.onEstadoRadioButtonChange($event)"
+                      class="example-margin ms-4 text-secondary" value="Privado"><span
+                        class="text-secondary">Privado</span>
+                    </mat-radio-button>
+                    <mat-radio-button (change)="this.onEstadoRadioButtonChange($event)"
+                      class="example-margin ms-4 text-secondary" value="Publico"><span
+                        class="text-secondary">Publico</span>
+                    </mat-radio-button>
+                  </mat-radio-group>
                 </div>
 
-                <div class="col-12 col-sm-6">
-                  <label for="estado">Alcance:<span class="text-danger">*</span></label><br>
-
-                  <div class="d-flex">
-
-                    <div *ngFor="let estadoalcance of this.estadoAlcance" class="d-flex ml-2">
-                      <p-radioButton [inputId]="estadoalcance.key" [value]="estadoalcance" formControlName="alcance">
-                      </p-radioButton>
-                      <label [for]="estadoalcance.key" class="ml-2 mb-0 text-black-50">{{ estadoalcance.name }}</label>
-                    </div>
-
-                  </div>
+                <div *ngIf="this.privadoPublico" class="">
+                  <label id="example-radio-group-label">Estado:<span class="text-danger">*</span></label><br>
+                  <mat-radio-group formControlName="estado">
+                    <mat-radio-button class="example-margin ms-4 text-secondary" value="Abierto"><span
+                        class="text-secondary">Abierto</span>
+                    </mat-radio-button>
+                    <mat-radio-button class="example-margin ms-4 text-secondary" value="Cerrado"><span
+                        class="text-secondary">Cerrado</span>
+                    </mat-radio-button>
+                  </mat-radio-group>
                 </div>
+
 
               </div>
 
@@ -202,7 +202,7 @@
       <ng-template #notMostrarTabla>
         <div class="row justify-content-center">
           <!-- Tabla -->
-          <div class="datos-calend--lista col-12 col-xl-5 animated fadeIn fast">
+          <div class=" datos-calend--lista col-12 col-xl-5 animated fadeIn fast">
 
             <div class="row">
 
@@ -211,11 +211,14 @@
                   <p class="titulo-evento  mt-3">Datos de agenda</p>
 
                   <!-- Boton compartir enlace -->
-                  <!-- <div class=" mt-3">
+                  <div
+                    *ngIf=" this.newEventCreate?.alcance != 'Privado' && this.newEventCreate?.estado != 'Concluido' && this.newEventCreate?.users_id === this.usuario"
+                    class=" mt-3 animated fadeIn fast">
                     <a class="btn btn-success text-uppercase text-left" (click)="this.compartirEnWhatsApp()"><i
                         class="fas fa-share-alt text-white"></i>
-                      Compartir enlace</a>
-                  </div> -->
+                      Compartir agenda</a>
+                  </div>
+
                 </div>
                 <hr>
                 <!-- Lista de creacion de eventos -->
@@ -478,12 +481,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-danger contenedor-header">
-          <h5 class="modal-title text-white text-uppercase" id="myLargeModalLabel">Formulario de registro de agenda</h5>
+          <h5 class="modal-title text-white text-uppercase" id="myLargeModalLabel">Modificar datos de agenda</h5>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         </div>
         <div class="modal-body">
-
-          <h4 class="mb-4">Modificar datos</h4>
 
           <!-- Nombre evento -->
           <div class="form-group">
@@ -567,16 +568,14 @@
           </div>
 
           <!-- Estado -->
-          <div class="form-group">
+          <div *ngIf="this.dataShowEvento?.alcance != 'Privado'" class="form-group">
             <label for="estadoM">Seleccione un estado:<span class="text-danger">*</span></label>
-            <!-- En tu template HTML -->
+
             <p-dropdown [style]="{ 'width': '100%' }" [options]="this.estadoEvento" formControlName="estadoM">
             </p-dropdown>
 
-            <!-- Validacion -->
-            <!-- Preguntamos si es invalido y si esta sucio o a sido tocado -->
             <span *ngIf="this.estadoM?.invalid && (this.estadoM?.dirty || this.estadoM?.touched)" class="texto-tam">
-              <!-- Errores con expresiones regulares -->
+
               <div *ngIf="this.estadoM?.hasError('required')" class="animated fadeIn fast text-danger" id="">
                 Este campo es requerido.
               </div>

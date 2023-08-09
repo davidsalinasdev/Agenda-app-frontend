@@ -30,6 +30,9 @@ import { PrimengModule } from '../primeng/primeng.module';
 // Componentes reutilizables
 import { ComponentsModule } from '../components/components.module';
 
+// Angular Material
+import { MaterialModule } from '../material/material.module';
+
 
 @NgModule({
   declarations: [
@@ -47,7 +50,8 @@ import { ComponentsModule } from '../components/components.module';
     NgxPaginationModule,
     FullCalendarModule,
     PrimengModule,
-    ComponentsModule
+    ComponentsModule,
+    MaterialModule
   ],
   exports: [
     PagesComponent,

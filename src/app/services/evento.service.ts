@@ -63,4 +63,12 @@ export class EventoService {
 
   }
 
+  /**
+   * cambiarEstado
+   */
+  public cambiarEstado() {
+    // Ahora con interceptores
+    return this.http.post<any>(base_url + '/api/eventos/cambiarestado', {});
+  }
+
 }

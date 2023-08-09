@@ -162,5 +162,16 @@ table th {
 @media (min-width: 1600px) {
   .estado-evento {
     flex-direction: row;
+    gap: 3rem;
   }
+}
+
+.mat-mdc-radio-button~.mat-mdc-radio-button {
+  margin-left: 10px;
+}
+
+
+
+.mat-mdc-radio-checked {
+  color: #da4fb7 !important;
 }

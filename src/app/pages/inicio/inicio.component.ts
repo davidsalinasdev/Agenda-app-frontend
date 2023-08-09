@@ -1,4 +1,5 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Attribute } from './../../../../node_modules/@angular/cdk/node_modules/parse5/dist/cjs/common/token.d';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 
 // Full calendar
 import { CalendarOptions, Calendar, EventClickArg } from '@fullcalendar/core';
@@ -30,6 +31,8 @@ import { Evento } from 'src/app/models/eventos.model';
 import { Punto } from 'src/app/models/puntos.model';
 
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { FechaService } from '../../services/fecha.service';
+import { Subscription } from 'rxjs';
 
 
 // Interfaces
@@ -57,9 +60,9 @@ declare var $: any;
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.css']
 })
-export class InicioComponent implements OnInit {
+export class InicioComponent implements OnInit, OnDestroy {
 
-  public enlaceCompartir: string = 'https://www.google.com';
+  public enlaceCompartir: string = 'https://gobernaciondecochabamba.bo';
   public enlaceCompartirSeguro!: SafeUrl;
 
 
@@ -149,16 +152,25 @@ export class InicioComponent implements OnInit {
 
   public fechaModificar!: string;
 
-  public estadoAgenda: EstadoAgenda[] = [
-    { name: 'Abierto', key: 'Abierto' },
-    { name: 'Cerrado', key: 'Cerrado' }
-  ];
+  // public estadoAgenda: EstadoAgenda[] = [
+  //   { name: 'Abierto', key: 'Abierto' },
+  //   { name: 'Cerrado', key: 'Cerrado' }
+  // ];
 
-  public estadoAlcance: EstadoAlcance[] = [
-    { name: 'Privado', key: 'Privado' },
-    { name: 'Publico', key: 'Publico' }
-  ];
+  // public estadoAlcance: EstadoAlcance[] = [
+  //   { name: 'Privado', key: 'Privado' },
+  //   { name: 'Publico', key: 'Publico' }
+  // ];
 
+  public estadoAlcance: string[] = ['Privado', 'Publico'];
+  public estadoAgenda: string[] = ['Abierto', 'Cerrado'];
+
+  // Estado del evento publico y privado
+  public privadoPublico: boolean = false;
+
+  public fechaActual!: any;
+
+  private subscription!: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -169,15 +181,37 @@ export class InicioComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private sharedDataServices: SharedDataService,
     private miAgendaServices: MiagendaService,
+    private fechaServices: FechaService
   ) {
 
     this.enlaceCompartirSeguro = this.sanitizer.bypassSecurityTrustUrl(this.enlaceCompartir);
 
   }
 
+
   ngOnInit(): void {
 
+    this.eventosServices.cambiarEstado()
+      .subscribe(resp => {
+        // console.log(resp);
 
+      })
+
+    this.subscription = this.fechaServices.obtenerFecha().subscribe((fecha) => {
+      this.fechaActual = fecha;
+      // console.log(this.fechaActual);
+
+      if (this.fechaActual?.hora === '00:00:01') {
+        this.eventosServices.cambiarEstado()
+          .subscribe(resp => {
+            console.log(resp);
+
+          })
+
+      }
+
+
+    });
 
     this.scrollToTop();
     this.crearFormulario();
@@ -325,11 +359,13 @@ export class InicioComponent implements OnInit {
         evento: this.formulario.value.evento,
         lugar_evento: this.formulario.value.lugar_evento,
         fecha_hora_evento: this.formulario.value.fecha_hora_evento,
-        estado: this.formulario.value.estado.name,
-        alcance: this.formulario.value.alcance.name,
+        estado: this.formulario.value.estado,
+        alcance: this.formulario.value.alcance,
         etiqueta: this.formulario.value.etiqueta,
         users_id: this.usuario,
       }
+
+      // console.log(formData);
 
       this.btnSave = false;
 
@@ -555,7 +591,10 @@ export class InicioComponent implements OnInit {
     this.btnNewEvent = false;
     this.mostrarTabla = true;
 
-    // this.btnNewEvent = true;
+
+
+    this.privadoPublico = false;
+
     this.mostrarTablaPuntos = true;
 
     this.puntosCreados = [];
@@ -575,9 +614,6 @@ export class InicioComponent implements OnInit {
     this.eventosServices.showEvento(idEvento)
       .subscribe({
         next: ({ evento }) => {
-
-          // console.log(evento);
-
 
           this.scrollToTop();
 
@@ -1098,13 +1134,70 @@ export class InicioComponent implements OnInit {
 
   }
 
-  // Compatir por whatsap
-  public compartirEnWhatsApp() {
-    const mensaje = '¡Echa un vistazo a este enlace!';
-    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensaje)}%20${this.enlaceCompartir}`;
-    window.open(url);
+  /**
+   * onEstadoRadioButtonChange
+   */
+  public onEstadoRadioButtonChange(event: any) {
+
+    const { value: name } = event;
+
+    switch (name) {
+      case 'Privado':
+        this.privadoPublico = false;
+        this.formulario.get('estado')?.reset();
+        this.formulario.patchValue({ estado: 'Cerrado' });
+
+        break;
+      case 'Publico':
+        this.privadoPublico = true;
+        this.formulario.patchValue({ estado: 'Abierto' });
+        break;
+      default:
+        this.privadoPublico = false;
+        break;
+    }
+
   }
 
+  // Compatir por whatsap
+  public compartirEnWhatsApp() {
+
+    // Fecha
+    const dateString = this.newEventCreate?.fecha_hora_evento;
+    const fechaEvento = dateString.substring(0, 10);
+
+    // Hora
+    const timeString = this.newEventCreate?.fecha_hora_evento;
+    const horaEvento = timeString.split('T')[1];
+
+    let puntos: string = '';
+
+    this.puntosCreados.forEach((element, index) => {
+
+      puntos = puntos + `*${index + 2}.-* ${element.puntos}\n`;
+
+    });
+
+    const mensaje = '*Reunión programada - GADC*';
+    const tema = `*Tema:* ${this.newEventCreate?.evento}`;
+    const lugar = `*Lugar:* ${this.newEventCreate?.lugar_evento}`;
+    const fecha = `*Fecha y hora:* 📅 ${fechaEvento} | ⏰ ${horaEvento}`;
+    const tituloPuntos = `*Puntos a tratar*`;
+    const primerPunto = `*1.-* ${this.newEventCreate?.evento}`;
+    const mensajeCompleto = mensaje + '\n' + tema + '\n' + lugar + '\n' + fecha + '\n' +
+      tituloPuntos + '\n' + primerPunto + '\n' + puntos + '\n';
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensajeCompleto)}`;
+    window.open(url);
+
+
+
+
+  }
+
+  // Es importante esto para destruir suscripciones
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
 }
 
