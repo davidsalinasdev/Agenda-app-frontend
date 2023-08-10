@@ -183,34 +183,21 @@ export class InicioComponent implements OnInit, OnDestroy {
     private miAgendaServices: MiagendaService,
     private fechaServices: FechaService
   ) {
-
     this.enlaceCompartirSeguro = this.sanitizer.bypassSecurityTrustUrl(this.enlaceCompartir);
-
   }
-
 
   ngOnInit(): void {
 
-    this.eventosServices.cambiarEstado()
-      .subscribe(resp => {
-        // console.log(resp);
-
-      })
-
+    // Actualizacion de estado a concluido
     this.subscription = this.fechaServices.obtenerFecha().subscribe((fecha) => {
       this.fechaActual = fecha;
-      // console.log(this.fechaActual);
 
       if (this.fechaActual?.hora === '00:00:01') {
         this.eventosServices.cambiarEstado()
           .subscribe(resp => {
             console.log(resp);
-
           })
-
       }
-
-
     });
 
     this.scrollToTop();
@@ -220,7 +207,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
     const user = localStorage.getItem('access');
     if (user) {
-      const { token, identity } = JSON.parse(user);
+      const { identity } = JSON.parse(user);
       this.usuario = identity.sub;
 
     }

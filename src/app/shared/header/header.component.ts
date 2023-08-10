@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+// Servicios
+import { EventoService } from '../../services/evento.service';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -15,9 +18,18 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private eventosServices: EventoService
   ) { }
 
   ngOnInit(): void {
+
+    this.eventosServices.cambiarEstado()
+      .subscribe(resp => {
+        // console.log(resp);
+
+      })
+
+
     const user = localStorage.getItem('access');
     if (user) {
       const { token, identity } = JSON.parse(user);
