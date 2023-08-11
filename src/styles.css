@@ -30,5 +30,48 @@
 
 /* FIN Tabla de datos */
 
+
+/* Tolltip */
+/* Estilos base del enlace */
+.custom-link {
+  display: inline-block;
+  position: relative;
+  color: #17a2b8;
+  /* Color del enlace */
+  text-decoration: none;
+}
+
+/* Estilos del tooltip */
+.custom-link::before {
+  content: attr(title);
+  background-color: #333;
+  /* Color de fondo del tooltip */
+  color: #fff;
+  /* Color del texto del tooltip */
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 10%;
+  /* Espacio entre el enlace y el tooltip */
+  right: 110%;
+  /* Muestra el tooltip a la izquierda */
+  transform: translatey(-55%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+/* Mostrar el tooltip al pasar el mouse sobre el enlace */
+.custom-link:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* FIN Tolltip */
+
+
 /* html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */

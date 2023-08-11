@@ -25,8 +25,6 @@ export class HeaderComponent implements OnInit {
 
     this.eventosServices.cambiarEstado()
       .subscribe(resp => {
-        // console.log(resp);
-
       })
 
 

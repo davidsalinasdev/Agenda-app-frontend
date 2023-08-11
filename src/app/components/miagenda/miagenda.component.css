@@ -36,3 +36,39 @@
   padding: 2px 13px;
   border-radius: 5px;
 }
+
+.acciones-agenda {
+  display: flex;
+  gap: 1rem;
+}
+
+
+.table-responsive--local {
+  display: block;
+  width: 100%;
+}
+
+@media (min-width: 1400px) {
+  .table-responsive--local {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+
+@media (min-width: 1700px) {
+  .table-responsive--local {
+    overflow-x: hidden;
+  }
+}
+
+.invitado--red {
+  background-color: rgba(201, 25, 84, 0.055);
+  border-left: 2px solid rgb(201, 25, 83);
+  border-radius: 2rem;
+}
+
+.invitado--success {
+  border-left: 2px solid rgb(10, 182, 96);
+  border-radius: 2rem;
+}

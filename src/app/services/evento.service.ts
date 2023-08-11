@@ -34,6 +34,7 @@ export class EventoService {
   public storeEventos(eventos: any) {
 
     // Ahora con interceptores
+
     return this.http.post<any>(base_url + '/api/eventos', eventos);
 
   }

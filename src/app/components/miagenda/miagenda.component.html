@@ -1,50 +1,122 @@
 <div class="miagenda miagenda--lista">
 
-  <h4 class="text-uppercase text-primary p-3">Mi Agenda</h4>
+  <h4 class="text-uppercase text-primary pl-3 pt-3 mb-0">Mi Agenda</h4>
+  <span class="text-danger pl-3 pb-2 text-black-50">Lista de agendas vigentes a la fecha actual</span>
 
-  <div class="table-responsive p-2">
+  <div class="table-responsive--local p-2">
     <table class="table">
       <thead class="table-header">
         <tr class="table-header__encabezado table-header__encabezado--color">
           <!-- <th scope="col">#</th> -->
-          <th scope="col">Agenda</th>
-          <th scope="col">Lugar</th>
-          <th scope="col">Fecha y hora</th>
-          <th scope="col">Estado</th>
-          <th scope="col">Alcance</th>
-          <th scope="col">Etiqueta</th>
+          <th style="width: 25%;">Agenda</th>
+          <th style="width: 15%;">Lugar</th>
+          <th style="width: 20%;">Fecha y hora</th>
+          <th style="width: 10%;">Estado</th>
+          <th style="width: 10%;">Alcance</th>
+          <th style="width: 10%;">Etiqueta</th>
+          <th style="width: 10%;">Acciones</th>
         </tr>
       </thead>
       <tbody>
         <ng-container *ngFor="let item of this.dataAgenda; let i = index">
-          <tr
-            *ngIf="(this.usuario === item.users_id && item.evento.estado ==='Abierto') || (this.usuario === item.users_id && item.evento.estado ==='Cerrado')"
-            class="table-cuerpo__datos">
-            <!-- <th>{{ i + 1 }}.</th> -->
-            <td>{{ item.evento.evento }}</td>
-            <td>{{ item.evento.lugar_evento }}</td>
-            <td>{{ item.evento.fecha_hora_evento}}</td>
 
-            <!-- Utilizando ngSwitch -->
-            <td [ngSwitch]="item.evento.estado">
-              <span class="text-success" *ngSwitchCase="'Abierto'">
-                {{ item.evento.estado }}
-              </span>
-              <span class="text-purple" *ngSwitchCase="'Cerrado'">
-                {{ item.evento.estado }}
-              </span>
-              <span class="text-danger" *ngSwitchCase="'Concluido'">
-                {{ item.evento.estado }}
-              </span>
-              <span class="text-success" *ngSwitchDefault>
-                Abierto
-              </span>
-            </td>
-            <td>{{ item.evento.alcance }}</td>
-            <td><span class="etiqueta" [style.background-color]="item.evento.etiqueta"
-                [style.color]="item.evento.etiqueta">----</span></td>
+          <ng-container *ngIf="(this.usuario === item.users_id && item.evento.estado === 'Abierto') || (this.usuario ===
+            item.users_id && item.evento.estado === 'Cerrado')">
 
-          </tr>
+            <tr *ngIf="this.item.evento.users_id != this.usuario; else notInvitado"
+              class="table-cuerpo__datos invitado--red">
+              <!-- <th>{{ i + 1 }}.</th> -->
+              <td>{{ item.evento.evento }}</td>
+              <td>{{ item.evento.lugar_evento }}</td>
+              <td>{{ item.evento.fecha_hora_evento}}</td>
+
+              <!-- Utilizando ngSwitch -->
+              <td [ngSwitch]="item.evento.estado">
+                <span class="text-success" *ngSwitchCase="'Abierto'">
+                  {{ item.evento.estado }}
+                </span>
+                <span class="text-purple" *ngSwitchCase="'Cerrado'">
+                  {{ item.evento.estado }}
+                </span>
+                <span class="text-danger" *ngSwitchCase="'Concluido'">
+                  {{ item.evento.estado }}
+                </span>
+                <span class="text-success" *ngSwitchDefault>
+                  Abierto
+                </span>
+              </td>
+              <td>{{ item.evento.alcance }}</td>
+              <td><span class="etiqueta" [style.background-color]="item.evento.etiqueta"
+                  [style.color]="item.evento.etiqueta">----</span></td>
+
+              <td class="acciones-agenda">
+                <a class="text-warning btn-margen puntero custom-link" title="Actualizar detalles de la agenda">
+                  <i class="fas fa-pen"></i>
+                </a>
+
+                <a class="text-danger puntero custom-link" title="Eliminar de mi agenda"
+                  (click)="this.destroyMiAgenda(item.evento.id, item.evento.evento, item.evento.users_id)">
+                  <i class="fas fa-trash"></i>
+                </a>
+
+                <a class="text-danger puntero custom-link" title="Compartir agenda">
+                  <i class="fas fa-share-alt text-success"></i>
+                </a>
+
+              </td>
+
+            </tr>
+
+            <ng-template #notInvitado>
+              <tr class="table-cuerpo__datos invitado--success">
+                <!-- <th>{{ i + 1 }}.</th> -->
+                <td>{{ item.evento.evento }}</td>
+                <td>{{ item.evento.lugar_evento }}</td>
+                <td>{{ item.evento.fecha_hora_evento}}</td>
+
+                <!-- Utilizando ngSwitch -->
+                <td [ngSwitch]="item.evento.estado">
+                  <span class="text-success" *ngSwitchCase="'Abierto'">
+                    {{ item.evento.estado }}
+                  </span>
+                  <span class="text-purple" *ngSwitchCase="'Cerrado'">
+                    {{ item.evento.estado }}
+                  </span>
+                  <span class="text-danger" *ngSwitchCase="'Concluido'">
+                    {{ item.evento.estado }}
+                  </span>
+                  <span class="text-success" *ngSwitchDefault>
+                    Abierto
+                  </span>
+                </td>
+                <td>{{ item.evento.alcance }}</td>
+                <td><span class="etiqueta" [style.background-color]="item.evento.etiqueta"
+                    [style.color]="item.evento.etiqueta">----</span></td>
+
+                <td class="acciones-agenda">
+                  <a class="text-warning btn-margen puntero custom-link" title="Actualizar detalles de la agenda">
+                    <i class="fas fa-pen"></i>
+                  </a>
+
+                  <a class="text-danger puntero custom-link" title="Eliminar de mi agenda"
+                    (click)="this.destroyMiAgenda(item.evento.id, item.evento.evento, item.evento.users_id)">
+                    <i class="fas fa-trash"></i>
+                  </a>
+
+                  <a class="text-danger puntero custom-link" title="Compartir agenda">
+                    <i class="fas fa-share-alt text-success"></i>
+                  </a>
+
+                </td>
+
+              </tr>
+            </ng-template>
+
+
+          </ng-container>
+
+
+
         </ng-container>
       </tbody>
     </table>

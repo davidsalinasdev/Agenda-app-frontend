@@ -33,6 +33,7 @@ import { Punto } from 'src/app/models/puntos.model';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FechaService } from '../../services/fecha.service';
 import { Subscription } from 'rxjs';
+import { SharedHijoPadreService } from '../../services/shared-hijo-padre.service';
 
 
 // Interfaces
@@ -172,6 +173,8 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   private subscription!: Subscription;
 
+  private subscriptionHijo!: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private eventosServices: EventoService,
@@ -181,9 +184,18 @@ export class InicioComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private sharedDataServices: SharedDataService,
     private miAgendaServices: MiagendaService,
-    private fechaServices: FechaService
+    private fechaServices: FechaService,
+    private sharedHijoPadreServices: SharedHijoPadreService
   ) {
+
+    // Aqui respondemos a la accion del hijo
+    this.subscriptionHijo = this.sharedHijoPadreServices.accionRealizada$.subscribe(() => {
+      // Lógica para responder a la acción del hijo
+      this.indexEventos();
+    });
+
     this.enlaceCompartirSeguro = this.sanitizer.bypassSecurityTrustUrl(this.enlaceCompartir);
+
   }
 
   ngOnInit(): void {
@@ -192,10 +204,13 @@ export class InicioComponent implements OnInit, OnDestroy {
     this.subscription = this.fechaServices.obtenerFecha().subscribe((fecha) => {
       this.fechaActual = fecha;
 
+      // console.log(fecha);
+
+
       if (this.fechaActual?.hora === '00:00:01') {
         this.eventosServices.cambiarEstado()
           .subscribe(resp => {
-            console.log(resp);
+            // console.log(resp);
           })
       }
     });
@@ -209,7 +224,6 @@ export class InicioComponent implements OnInit, OnDestroy {
     if (user) {
       const { identity } = JSON.parse(user);
       this.usuario = identity.sub;
-
     }
 
   }
@@ -221,8 +235,8 @@ export class InicioComponent implements OnInit, OnDestroy {
 
     // Formulario par crear un evento
     this.formulario = this.fb.group({
-      evento: ['', Validators.compose([Validators.required, Validators.maxLength(30)])],
-      lugar_evento: ['', Validators.compose([Validators.required, Validators.maxLength(70)])],
+      evento: ['', Validators.compose([Validators.required, Validators.maxLength(150)])],
+      lugar_evento: ['', Validators.compose([Validators.required, Validators.maxLength(150)])],
       fecha_hora_evento: ['', Validators.compose([Validators.required])],
       estado: ['', Validators.compose([Validators.required])],
       alcance: ['', Validators.compose([Validators.required])],
@@ -277,7 +291,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
     // Formulario par crear un evento
     this.formularioModificarEvento = this.fb.group({
-      eventoM: ['', Validators.compose([Validators.required, Validators.maxLength(200)])],
+      eventoM: ['', Validators.compose([Validators.required, Validators.maxLength(150)])],
       lugar_eventoM: ['', Validators.compose([Validators.required, Validators.maxLength(150)])],
       fecha_hora_eventoM: ['', Validators.compose([Validators.required])],
       etiquetaM: ['', Validators.compose([Validators.required])],
@@ -342,6 +356,7 @@ export class InicioComponent implements OnInit, OnDestroy {
     const fechaActual = new Date();
     this.fechaInvalida = fechaEvento >= fechaActual;
     if (this.fechaInvalida) {
+
       const formData = {
         evento: this.formulario.value.evento,
         lugar_evento: this.formulario.value.lugar_evento,
@@ -359,6 +374,7 @@ export class InicioComponent implements OnInit, OnDestroy {
       this.eventosServices.storeEventos(formData)
         .subscribe({
           next: ({ status, message, evento }) => {
+
             if (status === 'success') {
 
               // Fecha
@@ -1090,7 +1106,17 @@ export class InicioComponent implements OnInit, OnDestroy {
    * indexAgenda
    */
   public indexAgenda() {
-    this.miAgendaServices.indexAgenda()
+
+    let users_id: number = 0;
+
+    const user = localStorage.getItem('access');
+
+    if (user) {
+      const { identity } = JSON.parse(user);
+      users_id = identity.sub;
+    }
+
+    this.miAgendaServices.showAgenda(users_id)
       .subscribe({
         next: ({ agenda }) => {
 
@@ -1184,6 +1210,7 @@ export class InicioComponent implements OnInit, OnDestroy {
   // Es importante esto para destruir suscripciones
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.subscriptionHijo.unsubscribe();
   }
 
 }

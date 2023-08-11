@@ -15,8 +15,7 @@ const childRoute: Routes = [
 
     // RUTAS HIJAS DE
     {
-        path: '',
-        component: InicioComponent,
+        path: '', component: InicioComponent,
         data: { titulo: 'Agenda institucional GADC' },
         canActivate: [HasInicioService]
     }, // Path inicial

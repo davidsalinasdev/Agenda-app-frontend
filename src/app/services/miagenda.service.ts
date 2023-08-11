@@ -17,9 +17,9 @@ export class MiagendaService {
   /**
    * Lista de toda miagenda
    */
-  public indexAgenda() {
+  public showAgenda(id: number) {
     // Ahora con interceptores
-    return this.http.get<any>(base_url + '/api/agendas');
+    return this.http.get<any>(base_url + `/api/agendas/${id}`);
 
   }
 
@@ -33,6 +33,14 @@ export class MiagendaService {
     return this.http.post<any>(base_url + '/api/agendas/destroyagenda', agenda);
 
   }
+
+  public destroyAllPoinst(credenciales: any) {
+    // Destruir todos los puntos inscritos en el evento
+
+    // Ahora con interceptores
+    return this.http.post<any>(base_url + '/api/agendas/destroyallpoinst', credenciales);
+  }
+
 
 
 }

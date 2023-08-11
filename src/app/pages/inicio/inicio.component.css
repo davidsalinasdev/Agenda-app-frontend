@@ -31,7 +31,7 @@
   }
 
   .agenda-individual__agenda {
-    width: 40%;
+    width: 45%;
     margin-bottom: 0px;
   }
 
@@ -159,7 +159,8 @@ table th {
   gap: 20px;
 }
 
-@media (min-width: 1600px) {
+
+@media (min-width: 1700px) {
   .estado-evento {
     flex-direction: row;
     gap: 3rem;
