@@ -134,6 +134,8 @@ export class MiagendaComponent implements OnInit, OnDestroy {
                       'success'
                     )
 
+
+
                   },
                   error: (err) => {
                     Swal.fire('Error', err.error.message, 'error')
@@ -187,10 +189,8 @@ export class MiagendaComponent implements OnInit, OnDestroy {
                     // Actualiza los datos del componente mi agenda
                     this.dataAgenda = filteredData;
 
-                    console.log(this.dataAgenda);
-
                     // Actualiza los datos del componente mi agenda
-                    // this.sharedHijoPadreServices.notificarAccionRealizadaInicioComponent(); // Notificar al servicio
+                    this.sharedHijoPadreServices.notificarAccionRealizadaInicioComponent(); // Notificar al servicio
 
 
                     Swal.fire(
@@ -211,14 +211,26 @@ export class MiagendaComponent implements OnInit, OnDestroy {
 
         }
       })
-
-
     }
-
-
   }
 
 
+  /**
+   * updateMiAgenda
+   */
+  public updateMiAgenda(id: number) {
+
+    this.sharedHijoPadreServices.notificarAccionUpdateMiAgenda(id); // Notificar al padre
+  }
+
+
+  /**
+   * compartir
+   */
+  public compartir(id: number) {
+    console.log();
+
+  }
 
 
   // Es importante esto

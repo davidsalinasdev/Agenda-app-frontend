@@ -174,6 +174,9 @@ export class InicioComponent implements OnInit, OnDestroy {
   private subscription!: Subscription;
 
   private subscriptionHijo!: Subscription;
+  private subscriptionHijoUpdate!: Subscription;
+
+  public controlarMiAgenda: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -191,8 +194,17 @@ export class InicioComponent implements OnInit, OnDestroy {
     // Aqui respondemos a la accion del hijo
     this.subscriptionHijo = this.sharedHijoPadreServices.accionRealizada$.subscribe(() => {
       // Lógica para responder a la acción del hijo
+      this.indexAgenda('normal');
       this.indexEventos();
+
     });
+
+    // Aqui respondemos a la accion del hijo Update
+    this.subscriptionHijoUpdate = this.sharedHijoPadreServices.updateMiAgenda$.subscribe((id: number) => {
+
+      this.mostrarDatosAgenda(id);
+
+    })
 
     this.enlaceCompartirSeguro = this.sanitizer.bypassSecurityTrustUrl(this.enlaceCompartir);
 
@@ -203,11 +215,10 @@ export class InicioComponent implements OnInit, OnDestroy {
     // Actualizacion de estado a concluido
     this.subscription = this.fechaServices.obtenerFecha().subscribe((fecha) => {
       this.fechaActual = fecha;
-
-      // console.log(fecha);
-
+      // console.log(this.fechaActual);
 
       if (this.fechaActual?.hora === '00:00:01') {
+
         this.eventosServices.cambiarEstado()
           .subscribe(resp => {
             // console.log(resp);
@@ -218,7 +229,7 @@ export class InicioComponent implements OnInit, OnDestroy {
     this.scrollToTop();
     this.crearFormulario();
     this.crearFormularioModificarEvento();
-    this.indexAgenda();
+    this.indexAgenda('normal');
 
     const user = localStorage.getItem('access');
     if (user) {
@@ -340,11 +351,6 @@ export class InicioComponent implements OnInit, OnDestroy {
   get puntosM() {
     return this.formularioPuntos.get('puntosM') as FormArray;
   }
-
-
-
-
-
 
   /**
    * Registrar nuevo evento
@@ -519,6 +525,8 @@ export class InicioComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ({ evento }) => {
 
+          this.controlarMiAgenda = evento;
+
           // Angular-calendar
           this.calendarOptions = {
             initialView: 'dayGridMonth',
@@ -588,7 +596,6 @@ export class InicioComponent implements OnInit, OnDestroy {
       })
   }
 
-
   // Boton para crear evento
   public crearEvento() {
     this.btnNewEvent = false;
@@ -610,17 +617,27 @@ export class InicioComponent implements OnInit, OnDestroy {
   // }
 
   public handleEventClick(arg: EventClickArg) {
+
     // Id del evento con su alias
     const { publicId: idEvento } = arg.event._def.extendedProps;
 
 
+    this.mostrarDatosAgenda(idEvento);
+
+
+  }
+
+  /**
+   * mostrarDatosAgenda
+   */
+  public mostrarDatosAgenda(idEvento: number) {
     this.eventosServices.showEvento(idEvento)
       .subscribe({
         next: ({ evento }) => {
 
           this.scrollToTop();
 
-          this.indexAgenda();
+          this.indexAgenda('fromCalendar');
 
           // Fecha
           const dateString = evento.fecha_hora_evento;
@@ -700,6 +717,7 @@ export class InicioComponent implements OnInit, OnDestroy {
       })
   }
 
+
   // handleEventDragStop(arg: EventDragStopArg) {
   //   console.log(arg);
   // }
@@ -740,7 +758,7 @@ export class InicioComponent implements OnInit, OnDestroy {
   // Se dirige hacia mi agenda
   public miAgenda() {
     this.scrollToTop();
-    this.indexAgenda();
+    this.indexAgenda('normal');
     this.btnNewEvent = true;
   }
 
@@ -959,7 +977,8 @@ export class InicioComponent implements OnInit, OnDestroy {
             next: ({ status }) => {
               if (status === 'success') {
                 this.indexEventos();
-                this.indexAgenda();
+                this.indexAgenda('normal');
+
                 Swal.fire(
                   `${evento}`,
                   `A sido eliminado correctamente`,
@@ -1105,7 +1124,8 @@ export class InicioComponent implements OnInit, OnDestroy {
   /**
    * indexAgenda
    */
-  public indexAgenda() {
+  public indexAgenda(opcion: string) {
+
 
     let users_id: number = 0;
 
@@ -1128,7 +1148,10 @@ export class InicioComponent implements OnInit, OnDestroy {
           const filteredData = agenda.filter((item: any) => item.users_id === this.usuario && item.evento.estado != 'Concluido');
 
           this.dataAgenda = filteredData;
-          // console.log(this.dataAgenda);
+
+          if (this.dataAgenda.length === 0 && opcion != 'fromCalendar') {
+            this.btnNewEvent = true;
+          }
 
 
         },
@@ -1211,6 +1234,7 @@ export class InicioComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.subscriptionHijo.unsubscribe();
+    this.subscriptionHijoUpdate.unsubscribe();
   }
 
 }

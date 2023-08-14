@@ -7,16 +7,29 @@ import { Observable, Subject } from 'rxjs';
 })
 export class SharedHijoPadreService {
 
-  // Propiedades
+  // Propiedades para destruir un evento
   private accionRealizada = new Subject<void>();
 
+  // Para modificar un evento desde Mi agenda
+  private updateMiagenda = new Subject<number>();
+
   public accionRealizada$ = this.accionRealizada.asObservable();
+
+  public updateMiAgenda$ = this.updateMiagenda.asObservable();
 
 
   // Metodos
   public notificarAccionRealizadaInicioComponent() {
     this.accionRealizada.next();
   }
+
+  /**
+   * accionUpdateMiAgenda
+   */
+  public notificarAccionUpdateMiAgenda(id: number) {
+    this.updateMiagenda.next(id);
+  }
+
 
 }
 

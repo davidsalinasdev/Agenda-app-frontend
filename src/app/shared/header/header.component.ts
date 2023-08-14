@@ -24,7 +24,13 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
 
     this.eventosServices.cambiarEstado()
-      .subscribe(resp => {
+      .subscribe({
+        next: ({ message }) => {
+          // console.log(message);
+        },
+        error: (err: any) => {
+          // console.log(err.error.message)
+        }
       })
 
 

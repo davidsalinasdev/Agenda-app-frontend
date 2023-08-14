@@ -72,3 +72,7 @@
   border-left: 2px solid rgb(10, 182, 96);
   border-radius: 2rem;
 }
+
+.compartir {
+  color: rgba(133, 130, 130, 0.226);
+}
