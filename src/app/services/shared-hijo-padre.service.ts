@@ -13,9 +13,12 @@ export class SharedHijoPadreService {
   // Para modificar un evento desde Mi agenda
   private updateMiagenda = new Subject<number>();
 
-  public accionRealizada$ = this.accionRealizada.asObservable();
+  // Para compartir agenda
+  private sharedMiAgenda = new Subject<number>();
 
+  public accionRealizada$ = this.accionRealizada.asObservable();
   public updateMiAgenda$ = this.updateMiagenda.asObservable();
+  public sharedMiAgenda$ = this.sharedMiAgenda.asObservable();
 
 
   // Metodos
@@ -28,6 +31,14 @@ export class SharedHijoPadreService {
    */
   public notificarAccionUpdateMiAgenda(id: number) {
     this.updateMiagenda.next(id);
+  }
+
+
+  /**
+   * notificarAccionConpartirAgenda
+  */
+  public notificarAccionSharedAgenda(id: number) {
+    this.sharedMiAgenda.next(id);
   }
 
 

@@ -76,3 +76,7 @@
 .compartir {
   color: rgba(133, 130, 130, 0.226);
 }
+
+.puntero {
+  cursor: pointer;
+}

@@ -69,7 +69,7 @@
                 </a>
 
                 <ng-template #notCompartir>
-                  <a class="compartir puntero custom-link" title="Compartir agenda">
+                  <a class="compartir">
                     <i class="fas fa-share-alt"></i>
                   </a>
                 </ng-template>
@@ -116,9 +116,19 @@
                     <i class="fas fa-trash"></i>
                   </a>
 
-                  <a class="text-danger puntero custom-link" title="Compartir agenda">
+                  <a *ngIf="(item.evento.alcance === 'Privado' && item.evento.estado != 'Concluido' &&
+                    item.evento.users_id === this.usuario) || (item.evento.alcance === 'Publico' &&
+                    item.evento.estado != 'Concluido' && item.evento.users_id === this.usuario);else notCompartir"
+                    class="text-danger puntero custom-link" title="Compartir agenda"
+                    (click)="this.compartir(item.evento.id)">
                     <i class="fas fa-share-alt text-success"></i>
                   </a>
+
+                  <ng-template #notCompartir>
+                    <a class="compartir">
+                      <i class="fas fa-share-alt"></i>
+                    </a>
+                  </ng-template>
 
                 </td>
 

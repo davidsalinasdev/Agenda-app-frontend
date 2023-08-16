@@ -175,6 +175,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   private subscriptionHijo!: Subscription;
   private subscriptionHijoUpdate!: Subscription;
+  private subscriptionHijoShared!: Subscription;
 
   public controlarMiAgenda: any[] = [];
 
@@ -203,6 +204,24 @@ export class InicioComponent implements OnInit, OnDestroy {
     this.subscriptionHijoUpdate = this.sharedHijoPadreServices.updateMiAgenda$.subscribe((id: number) => {
 
       this.mostrarDatosAgenda(id);
+
+    })
+
+
+    // Aqui respondemos a la accion del hijo - accion compartir
+    this.subscriptionHijoShared = this.sharedHijoPadreServices.sharedMiAgenda$.subscribe((id: number) => {
+
+      console.log(id);
+
+      this.eventosServices.showEvento(id)
+        .subscribe({
+          next: (resp => {
+            const { evento } = resp;
+            this.newEventCreate = evento;
+            this.compartirEnWhatsApp();
+
+          })
+        })
 
     })
 
@@ -1198,6 +1217,9 @@ export class InicioComponent implements OnInit, OnDestroy {
   // Compatir por whatsap
   public compartirEnWhatsApp() {
 
+    console.log(this.newEventCreate);
+
+
     // Fecha
     const dateString = this.newEventCreate?.fecha_hora_evento;
     const fechaEvento = dateString.substring(0, 10);
@@ -1235,6 +1257,7 @@ export class InicioComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
     this.subscriptionHijo.unsubscribe();
     this.subscriptionHijoUpdate.unsubscribe();
+    this.subscriptionHijoShared.unsubscribe();
   }
 
 }

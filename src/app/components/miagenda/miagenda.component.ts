@@ -221,6 +221,7 @@ export class MiagendaComponent implements OnInit, OnDestroy {
   public updateMiAgenda(id: number) {
 
     this.sharedHijoPadreServices.notificarAccionUpdateMiAgenda(id); // Notificar al padre
+
   }
 
 
@@ -228,14 +229,17 @@ export class MiagendaComponent implements OnInit, OnDestroy {
    * compartir
    */
   public compartir(id: number) {
-    console.log();
+
+    this.sharedHijoPadreServices.notificarAccionSharedAgenda(id); // Notificar al padre
 
   }
 
 
   // Es importante esto
   ngOnDestroy() {
+
     this.subscription.unsubscribe();
+
   }
 
 
