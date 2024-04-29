@@ -75,7 +75,7 @@ export class UsuariosComponent implements OnInit {
   public roles: RolUsuario[] = [
     { label: 'Administrador', value: 'Administrador' },
     { label: 'Funcionario', value: 'Funcionario' },
-    { label: 'Invitado', value: 'Invitado' }
+    // { label: 'Invitado', value: 'Invitado' }
   ]
 
   public idServidor!: number;

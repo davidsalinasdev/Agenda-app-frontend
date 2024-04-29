@@ -17,6 +17,7 @@ import { PuntosService } from 'src/app/services/puntos.service';
 import { MiagendaService } from 'src/app/services/miagenda.service';
 
 
+
 import { SharedDataService } from '../../services/shared-data.service';
 
 
@@ -1217,8 +1218,6 @@ export class InicioComponent implements OnInit, OnDestroy {
   // Compatir por whatsap
   public compartirEnWhatsApp() {
 
-    console.log(this.newEventCreate);
-
 
     // Fecha
     const dateString = this.newEventCreate?.fecha_hora_evento;
@@ -1242,13 +1241,13 @@ export class InicioComponent implements OnInit, OnDestroy {
     const fecha = `*Fecha y hora:* 📅 ${fechaEvento} | ⏰ ${horaEvento}`;
     const tituloPuntos = `*Puntos a tratar*`;
     const primerPunto = `*1.-* ${this.newEventCreate?.evento}`;
+
     const mensajeCompleto = mensaje + '\n' + tema + '\n' + lugar + '\n' + fecha + '\n' +
       tituloPuntos + '\n' + primerPunto + '\n' + puntos + '\n';
+
+    //Whatsap 
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensajeCompleto)}`;
     window.open(url);
-
-
-
 
   }
 
